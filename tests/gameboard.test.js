@@ -53,7 +53,7 @@ describe("Ship placement", () => {
   });
   test("correct ship placement returns true", () => {
     expect(
-      testBoard.placeShip("patrol boat", { row: 0, col: 2 }, { row: 0, col: 0 })
-    ).toBe(false);
+      testBoard.placeShip("patrol boat", { row: 0, col: 2 }, { row: 0, col: 1 })
+    ).toBe(true);
   });
 });

@@ -12,10 +12,9 @@ export class Gameboard {
     return this.#grid;
   }
   placeShip(shipName, startPoint, endPoint) {
-    if (!this.#isValidShip(shipName, startPoint, endPoint)) return false;
-    if (!this.#isValidLocation(startPoint, endPoint)) return false;
-
     const newShip = new Ship(shipName);
+    if (this.#hasBeenPlaced(newShip.name)) return false;
+    if (!this.#isValidLocation(newShip, startPoint, endPoint)) return false;
 
     this.#addToGrid(newShip, startPoint, endPoint);
 
@@ -23,33 +22,34 @@ export class Gameboard {
     return true;
   }
 
-  #isValidLocation(startPoint, endPoint) {
+  #hasBeenPlaced(shipName) {
+    return this.#placedShips.some((ship) => ship.name === shipName);
+  }
+
+  #isValidLocation(shipName, startPoint, endPoint) {
+    return (
+      this.#isInBounds(startPoint, endPoint) &&
+      this.#isValidOrientation(shipName, startPoint, endPoint)
+    );
+  }
+
+  #isInBounds(startPoint, endPoint) {
     let isInBoundsCheck = true;
-    for (const curPoint of [startPoint, endPoint]) {
-      if (
-        curPoint.row < 0 ||
-        curPoint.row > 9 ||
-        curPoint.col < 0 ||
-        curPoint.col > 9
-      ) {
+    for (const value of [
+      startPoint.row,
+      startPoint.col,
+      endPoint.row,
+      endPoint.col,
+    ]) {
+      if (value < 0 || value > 9) {
         isInBoundsCheck = false;
       }
     }
     return isInBoundsCheck;
   }
-  #isValidShip(shipName, startPoint, endPoint) {
-    return (
-      this.#shipNameExists(shipName) &&
-      this.#shipLocationValid(shipName, startPoint, endPoint)
-    );
-  }
 
-  #shipNameExists(shipName) {
-    return !this.#placedShips.some((ship) => ship.name === shipName);
-  }
-
-  #shipLocationValid(shipName, startPoint, endPoint) {
-    const shipLength = availableShips[shipName].length;
+  #isValidOrientation(shipName, startPoint, endPoint) {
+    const shipLength = shipName.length;
     const rowDifference = Math.abs(startPoint.row - endPoint.row);
     const colDifference = Math.abs(startPoint.col - endPoint.col);
     if (rowDifference === 0 || colDifference === 0) {

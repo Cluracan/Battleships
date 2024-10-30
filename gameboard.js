@@ -10,6 +10,11 @@ export class Gameboard {
   get grid() {
     return this.#grid;
   }
+
+  get ships() {
+    return this.#placedShips;
+  }
+
   placeShip(shipName, startPoint, endPoint) {
     const newShip = new Ship(shipName);
     if (this.#hasBeenPlaced(newShip.name)) return false;
@@ -20,10 +25,13 @@ export class Gameboard {
   }
 
   receiveAttack(attackPoint) {
-    if (this.#grid[attackPoint.row][attackPoint.col] === "#") {
+    const attackPointCode = this.#grid[attackPoint.row][attackPoint.col];
+    if (attackPointCode === "#") {
       this.#grid[attackPoint.row][attackPoint.col] = "*";
       return "MISS";
     } else {
+      let targetShip = this.ships.find((ship) => ship.code === attackPointCode);
+      targetShip.scoreHit();
       this.#grid[attackPoint.row][attackPoint.col] = "*";
       return "HIT";
     }

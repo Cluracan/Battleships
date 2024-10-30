@@ -63,6 +63,12 @@ describe("Ship placement", () => {
       testBoard.placeShip("patrol boat", { row: 0, col: 2 }, { row: 0, col: 1 })
     ).toBe(true);
   });
+
+  test("correct ship placement adds ship to placedShips store", () => {
+    testBoard.placeShip("patrol boat", { row: 0, col: 2 }, { row: 0, col: 1 });
+    testBoard.placeShip("submarine", { row: 1, col: 2 }, { row: 1, col: 4 });
+    expect(testBoard.ships.length).toBe(2);
+  });
 });
 
 describe("Receive attack", () => {
@@ -80,8 +86,16 @@ describe("Receive attack", () => {
     expect(testBoard.grid[4][1]).toBe("*");
   });
 
-  test("if attack hits ship, hitCount is increased", () => {
+  test("notification given if attack hits ship", () => {
     testBoard.placeShip("battleship", { row: 0, col: 3 }, { row: 0, col: 6 });
     expect(testBoard.receiveAttack({ row: 0, col: 4 })).toBe("HIT");
+  });
+
+  test("ship hitcount increased if attack hits ship", () => {
+    testBoard.placeShip("battleship", { row: 0, col: 3 }, { row: 0, col: 6 });
+    testBoard.receiveAttack({ row: 0, col: 4 });
+    expect(
+      testBoard.ships.find((ship) => ship.name === "battleship").hitCount
+    ).toBe(1);
   });
 });

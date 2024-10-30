@@ -1,4 +1,3 @@
-import { availableShips } from "./battleships-config";
 import { Ship } from "./ship";
 
 export class Gameboard {
@@ -18,6 +17,16 @@ export class Gameboard {
     this.#addToGrid(newShip, startPoint, endPoint);
     this.#placedShips.push(newShip);
     return true;
+  }
+
+  receiveAttack(attackPoint) {
+    if (this.#grid[attackPoint.row][attackPoint.col] === "#") {
+      this.#grid[attackPoint.row][attackPoint.col] = "*";
+      return "MISS";
+    } else {
+      this.#grid[attackPoint.row][attackPoint.col] = "*";
+      return "HIT";
+    }
   }
 
   #hasBeenPlaced(shipName) {

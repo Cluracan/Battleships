@@ -15,9 +15,7 @@ export class Gameboard {
     const newShip = new Ship(shipName);
     if (this.#hasBeenPlaced(newShip.name)) return false;
     if (!this.#isValidLocation(newShip, startPoint, endPoint)) return false;
-
     this.#addToGrid(newShip, startPoint, endPoint);
-
     this.#placedShips.push(newShip);
     return true;
   }
@@ -68,18 +66,15 @@ export class Gameboard {
   }
 
   #addToGrid(newShip, startPoint, endPoint) {
-    const shipLength = newShip.length;
-    const rowInc =
-      startPoint.row === endPoint.row
-        ? 0
-        : startPoint.row < endPoint.row
-        ? 1
-        : -1;
-    const colInc = (endPoint.col - startPoint.col) / (shipLength - 1);
+    const numberOfSteps = newShip.length - 1;
+    const rowInc = (endPoint.row - startPoint.row) / numberOfSteps;
+    const colInc = (endPoint.col - startPoint.col) / numberOfSteps;
 
-    for (let i = 0; i < shipLength; i++) {
+    for (let i = 0; i < newShip.length; i++) {
       this.#grid[startPoint.row + rowInc * i][startPoint.col + colInc * i] =
         newShip.name[0].toUpperCase();
     }
+    // console.log(newShip.name, startPoint, endPoint);
+    // this.#grid.forEach((row) => console.log(...row));
   }
 }

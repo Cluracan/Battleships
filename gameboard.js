@@ -112,13 +112,9 @@ export class Gameboard {
   }
 
   #addToGrid(newShip, startPoint, endPoint) {
-    let shipLocationCells = this.#getShipLocationCells(
-      newShip,
-      startPoint,
-      endPoint
-    );
+    let shipCells = this.#getShipLocationCells(newShip, startPoint, endPoint);
 
-    shipLocationCells.forEach((location) => {
+    shipCells.forEach((location) => {
       this.#grid[location.row][location.col].ship = newShip.name;
     });
   }

@@ -14,8 +14,8 @@ describe("Ship placement", () => {
   });
 
   test("gameboard grid can be accessed", () => {
-    expect(testBoard.grid[2][3]).toBe("#");
-    expect(testBoard.grid[5][8]).toBe("#");
+    expect(testBoard.grid[2][3].ship).toBe(undefined);
+    expect(testBoard.grid[5][8].ship).toBe(undefined);
   });
 
   test("can place ship", () => {
@@ -25,7 +25,7 @@ describe("Ship placement", () => {
       { row: 1, col: 3 },
       { row: 2, col: 4 },
     ]) {
-      expect(testBoard.grid[point.row][point.col]).toBe("S");
+      expect(testBoard.grid[point.row][point.col].ship).toBe("submarine");
     }
     testBoard.placeShip("battleship", { row: 0, col: 3 }, { row: 0, col: 6 });
     for (const point of [
@@ -34,7 +34,7 @@ describe("Ship placement", () => {
       { row: 0, col: 5 },
       { row: 0, col: 6 },
     ]) {
-      expect(testBoard.grid[point.row][point.col]).toBe("B");
+      expect(testBoard.grid[point.row][point.col].ship).toBe("battleship");
       expect(1 + 1).toBe;
     }
   });
@@ -55,6 +55,21 @@ describe("Ship placement", () => {
   test("cannot add a misplaced ship", () => {
     expect(
       testBoard.placeShip("submarine", { row: 6, col: 2 }, { row: 6, col: 1 })
+    ).toBe(false);
+  });
+
+  test("cannot lay a ship over the top of existing ship", () => {
+    testBoard.placeShip("battleship", { row: 3, col: 1 }, { row: 6, col: 4 });
+
+    //Print GRID
+    testBoard.grid.forEach((row) => {
+      let printRow = row
+        .map((cell) => (cell.ship ? (cell.shotFired ? "#" : "X") : "."))
+        .join("");
+      console.log(printRow);
+    });
+    expect(
+      testBoard.placeShip("submarine", { row: 4, col: 1 }, { row: 4, col: 3 })
     ).toBe(false);
   });
 
@@ -81,9 +96,9 @@ describe("Receive attack", () => {
 
   test("attack is placed on grid", () => {
     testBoard.receiveAttack({ row: 2, col: 2 });
-    expect(testBoard.grid[2][2]).toBe("*");
+    expect(testBoard.grid[2][2].shotFired).toBe(true);
     testBoard.receiveAttack({ row: 4, col: 1 });
-    expect(testBoard.grid[4][1]).toBe("*");
+    expect(testBoard.grid[4][1].shotFired).toBe(true);
   });
 
   test("notification given if attack hits ship", () => {

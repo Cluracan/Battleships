@@ -25,14 +25,14 @@ export class Gameboard {
   }
 
   receiveAttack(attackPoint) {
-    const attackPointCode = this.#grid[attackPoint.row][attackPoint.col];
-    if (attackPointCode === "#") {
-      this.#grid[attackPoint.row][attackPoint.col] = "*";
+    const targetCell = this.#grid[attackPoint.row][attackPoint.col];
+    if (!targetCell.ship) {
+      this.#grid[attackPoint.row][attackPoint.col].shotFired = true;
       return "MISS";
     } else {
-      let targetShip = this.ships.find((ship) => ship.code === attackPointCode);
+      let targetShip = this.ships.find((ship) => ship.name === targetCell.ship);
       targetShip.scoreHit();
-      this.#grid[attackPoint.row][attackPoint.col] = "*";
+      this.#grid[attackPoint.row][attackPoint.col].shotFired = true;
       return "HIT";
     }
   }
@@ -44,7 +44,8 @@ export class Gameboard {
   #isValidLocation(shipName, startPoint, endPoint) {
     return (
       this.#isInBounds(startPoint, endPoint) &&
-      this.#isValidOrientation(shipName, startPoint, endPoint)
+      this.#isValidOrientation(shipName, startPoint, endPoint) &&
+      this.#isFreeOfShips(shipName, startPoint, endPoint)
     );
   }
 
@@ -76,22 +77,49 @@ export class Gameboard {
     }
   }
 
-  #initialiseGrid() {
-    return Array.from({ length: 10 }, (v, i) =>
-      Array.from({ length: 10 }, (v, i) => "#")
+  #isFreeOfShips(shipName, startPoint, endPoint) {
+    let shipCells = this.#getShipLocationCells(shipName, startPoint, endPoint);
+    return shipCells.every(
+      (cellLocation) =>
+        this.grid[cellLocation.row][cellLocation.col].ship === undefined
     );
   }
 
-  #addToGrid(newShip, startPoint, endPoint) {
+  #initialiseGrid() {
+    return Array.from({ length: 10 }, (v, i) =>
+      Array.from({ length: 10 }, (v, i) => {
+        return {
+          ship: undefined,
+          shotFired: false,
+        };
+      })
+    );
+  }
+
+  #getShipLocationCells(newShip, startPoint, endPoint) {
+    const cellArray = [];
     const numberOfSteps = newShip.length - 1;
     const rowInc = (endPoint.row - startPoint.row) / numberOfSteps;
     const colInc = (endPoint.col - startPoint.col) / numberOfSteps;
 
     for (let i = 0; i < newShip.length; i++) {
-      this.#grid[startPoint.row + rowInc * i][startPoint.col + colInc * i] =
-        newShip.name[0].toUpperCase();
+      cellArray.push({
+        row: startPoint.row + rowInc * i,
+        col: startPoint.col + colInc * i,
+      });
     }
-    // console.log(newShip.name, startPoint, endPoint);
-    // this.#grid.forEach((row) => console.log(...row));
+    return cellArray;
+  }
+
+  #addToGrid(newShip, startPoint, endPoint) {
+    let shipLocationCells = this.#getShipLocationCells(
+      newShip,
+      startPoint,
+      endPoint
+    );
+
+    shipLocationCells.forEach((location) => {
+      this.#grid[location.row][location.col].ship = newShip.name;
+    });
   }
 }

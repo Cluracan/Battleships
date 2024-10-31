@@ -60,14 +60,8 @@ describe("Ship placement", () => {
 
   test("cannot lay a ship over the top of existing ship", () => {
     testBoard.placeShip("battleship", { row: 3, col: 1 }, { row: 6, col: 4 });
+    testBoard.placeShip("destroyer", { row: 5, col: 8 }, { row: 7, col: 6 });
 
-    //Print GRID
-    testBoard.grid.forEach((row) => {
-      let printRow = row
-        .map((cell) => (cell.ship ? (cell.shotFired ? "#" : "X") : "."))
-        .join("");
-      console.log(printRow);
-    });
     expect(
       testBoard.placeShip("submarine", { row: 4, col: 1 }, { row: 4, col: 3 })
     ).toBe(false);
@@ -112,5 +106,25 @@ describe("Receive attack", () => {
     expect(
       testBoard.ships.find((ship) => ship.name === "battleship").hitCount
     ).toBe(1);
+  });
+
+  test("ship can be sunk with hits", () => {
+    testBoard.placeShip("carrier", { row: 9, col: 9 }, { row: 5, col: 9 });
+    for (let i = 0; i < 5; i++) {
+      testBoard.receiveAttack({ row: 9 - i, col: 9 });
+    }
+    //Print GRID
+    testBoard.grid.forEach((row) => {
+      let printRow = row
+        .map((cell) =>
+          cell.ship ? (cell.shotFired ? "#" : cell.ship[0].toUpperCase()) : "."
+        )
+        .join("");
+      console.log(printRow);
+    });
+
+    expect(testBoard.ships.find((ship) => ship.name === "carrier").isSunk).toBe(
+      true
+    );
   });
 });

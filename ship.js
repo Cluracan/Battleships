@@ -3,7 +3,6 @@ import { availableShips } from "./battleships-config";
 export class Ship {
   #name;
   #length;
-  #code;
   #hitCount;
   #isSunk;
   constructor(shipName) {
@@ -12,7 +11,6 @@ export class Ship {
     }
     this.#name = shipName;
     this.#length = availableShips[shipName].length;
-    this.#code = availableShips[shipName].code;
     this.#hitCount = 0;
     this.#isSunk = false;
   }
@@ -29,9 +27,7 @@ export class Ship {
   get isSunk() {
     return this.#isSunk;
   }
-  get code() {
-    return this.#code;
-  }
+
   scoreHit() {
     this.#hitCount++;
     if (this.#hitCount === this.#length) {

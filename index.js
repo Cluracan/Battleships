@@ -6,7 +6,6 @@ app.use(express.static(__dirname + "/client"));
 
 app.listen(9091, () => console.log("listening on port 9091"));
 app.get("/", (req, res) => {
-  //   console.log(req);
   res.sendFile(__dirname + "/index.html");
 });
 const WebSocketServer = require("websocket").server;
@@ -102,7 +101,7 @@ wsServer.on("request", (request) => {
   });
 
   console.log("Default (initial connect)");
-  console.log(request);
+
   //generate a new clientId
   const clientId = guid();
   clients[clientId] = {

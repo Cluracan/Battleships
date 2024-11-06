@@ -2,7 +2,6 @@
   "name": "project-battleships",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,6 +13,8 @@
     "vite": "^5.4.9"
   },
   "dependencies": {
-    "vitest": "^2.1.4"
+    "express": "^4.21.1",
+    "vitest": "^2.1.4",
+    "websocket": "^1.0.35"
   }
 }

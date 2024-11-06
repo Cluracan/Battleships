@@ -1,5 +1,5 @@
-import { Ship } from "./ship";
-import { availableShips } from "./battleships-config";
+import { Ship } from "./ship.mjs";
+import { availableShips } from "./battleships-config.mjs";
 
 export class Gameboard {
   #grid;

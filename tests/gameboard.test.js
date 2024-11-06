@@ -1,5 +1,5 @@
 import { test, expect, describe, beforeEach } from "vitest";
-import { Gameboard } from "../game-logic/gameboard";
+import { Gameboard } from "../client/game-logic/gameboard";
 
 test("Gameboard class exists", () => {
   expect(typeof Gameboard).toBe("function");

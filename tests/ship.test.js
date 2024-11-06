@@ -1,6 +1,6 @@
 import { expect, test, describe } from "vitest";
-import { Ship } from "../game-logic/ship";
-import { availableShips } from "../game-logic/battleships-config";
+import { Ship } from "../client/game-logic/ship.mjs";
+import { availableShips } from "../client/game-logic/battleships-config.mjs";
 
 test("Ship class exists", () => {
   expect(typeof Ship).toBe("function");

@@ -1,4 +1,4 @@
-import { availableShips } from "./battleships-config";
+import { availableShips } from "./battleships-config.mjs";
 
 export class Ship {
   #name;

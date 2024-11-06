@@ -1,3 +1,6 @@
+import { Gameboard } from "./game-logic/gameboard.mjs";
+console.log(Gameboard);
+
 import { testModFn } from "./testModule.mjs";
 testModFn();
 const checkDiv = document.getElementById("checkDiv");

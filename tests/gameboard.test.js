@@ -1,5 +1,5 @@
 import { test, expect, describe, beforeEach } from "vitest";
-import { Gameboard } from "../gameboard";
+import { Gameboard } from "../game-logic/gameboard";
 
 test("Gameboard class exists", () => {
   expect(typeof Gameboard).toBe("function");
@@ -19,14 +19,15 @@ describe("Ship placement", () => {
   });
 
   test("can place ship", () => {
-    testBoard.placeShip("submarine", { row: 0, col: 2 }, { row: 2, col: 4 });
-    for (const point of [
-      { row: 0, col: 2 },
-      { row: 1, col: 3 },
-      { row: 2, col: 4 },
-    ]) {
-      expect(testBoard.grid[point.row][point.col].ship).toBe("submarine");
-    }
+    //diagonal test
+    // testBoard.placeShip("submarine", { row: 0, col: 2 }, { row: 2, col: 4 });
+    // for (const point of [
+    //   { row: 0, col: 2 },
+    //   { row: 1, col: 3 },
+    //   { row: 2, col: 4 },
+    // ]) {
+    //   expect(testBoard.grid[point.row][point.col].ship).toBe("submarine");
+    // }
     testBoard.placeShip("battleship", { row: 0, col: 3 }, { row: 0, col: 6 });
     for (const point of [
       { row: 0, col: 3 },
@@ -59,11 +60,11 @@ describe("Ship placement", () => {
   });
 
   test("cannot lay a ship over the top of existing ship", () => {
-    testBoard.placeShip("battleship", { row: 3, col: 1 }, { row: 6, col: 4 });
-    testBoard.placeShip("destroyer", { row: 5, col: 8 }, { row: 7, col: 6 });
+    testBoard.placeShip("battleship", { row: 3, col: 1 }, { row: 3, col: 4 });
+    testBoard.placeShip("destroyer", { row: 5, col: 8 }, { row: 7, col: 8 });
 
     expect(
-      testBoard.placeShip("submarine", { row: 4, col: 1 }, { row: 4, col: 3 })
+      testBoard.placeShip("submarine", { row: 3, col: 1 }, { row: 3, col: 3 })
     ).toBe(false);
   });
 
@@ -77,6 +78,18 @@ describe("Ship placement", () => {
     testBoard.placeShip("patrol boat", { row: 0, col: 2 }, { row: 0, col: 1 });
     testBoard.placeShip("submarine", { row: 1, col: 2 }, { row: 1, col: 4 });
     expect(testBoard.ships.length).toBe(2);
+  });
+
+  test("gameboard can be reset", () => {
+    testBoard.placeShip("carrier", { row: 9, col: 9 }, { row: 5, col: 9 });
+    testBoard.placeShip("battleship", { row: 0, col: 3 }, { row: 0, col: 6 });
+    testBoard.resetBoard();
+    expect(testBoard.ships.length).toBe(0);
+    expect(
+      testBoard.grid.some((row) =>
+        row.some((cell) => cell.ship != undefined || cell.shotFired === true)
+      )
+    ).toBe(false);
   });
 });
 

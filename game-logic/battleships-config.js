@@ -8,4 +8,4 @@ const availableShips = {
 
 export { availableShips };
 
-//'code' depreciated :) but leaving these as objects to allow for 'quantity' (would need refactoring obviously
+//'code' key currently unused:) but leaving these as objects to allow for 'quantity' (would need refactoring obviously

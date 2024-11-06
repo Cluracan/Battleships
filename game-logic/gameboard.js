@@ -1,8 +1,10 @@
 import { Ship } from "./ship";
+import { availableShips } from "./battleships-config";
 
 export class Gameboard {
   #grid;
   #placedShips;
+
   constructor() {
     this.#grid = this.#initialiseGrid();
     this.#placedShips = [];
@@ -16,12 +18,18 @@ export class Gameboard {
   }
 
   placeShip(shipName, startPoint, endPoint) {
+    if (!this.#isValidShipName(shipName)) return false;
     const newShip = new Ship(shipName);
     if (this.#hasBeenPlaced(newShip.name)) return false;
     if (!this.#isValidLocation(newShip, startPoint, endPoint)) return false;
     this.#addToGrid(newShip, startPoint, endPoint);
     this.#placedShips.push(newShip);
     return true;
+  }
+
+  resetBoard() {
+    this.#grid = this.#initialiseGrid();
+    this.#placedShips = [];
   }
 
   receiveAttack(attackPoint) {
@@ -35,6 +43,10 @@ export class Gameboard {
       this.#grid[attackPoint.row][attackPoint.col].shotFired = true;
       return "HIT";
     }
+  }
+
+  #isValidShipName(shipName) {
+    return Object.keys(availableShips).includes(shipName);
   }
 
   #hasBeenPlaced(shipName) {
@@ -71,9 +83,11 @@ export class Gameboard {
     if (rowDifference === 0 || colDifference === 0) {
       return Math.max(rowDifference, colDifference) === shipLength - 1;
     } else {
-      return (
-        rowDifference === colDifference && rowDifference === shipLength - 1
-      );
+      return false;
+      //  vvvvvvvvvvvvvthis allows diagonalsvvvvvvvvvvvvvvvv
+      //  (
+      //   rowDifference === colDifference && rowDifference === shipLength - 1
+      // );
     }
   }
 

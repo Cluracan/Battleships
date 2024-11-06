@@ -1,5 +1,9 @@
 import { Gameboard } from "./game-logic/gameboard.mjs";
+import insertTitleContent from "./titleScreen.mjs";
 
+insertTitleContent();
+
+/*
 const checkDiv = document.getElementById("checkDiv");
 checkDiv.textContent = "PLEASE EORK";
 
@@ -103,3 +107,4 @@ ws.onmessage = (message) => {
     }
   }
 };
+*/

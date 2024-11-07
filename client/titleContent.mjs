@@ -1,3 +1,5 @@
+import insertBuildFleetContent from "./buildFleetContent.mjs";
+
 export default function insertTitleContent() {
   const headerContent = document.getElementById("header-content");
   const leftContent = document.getElementById("left-content");
@@ -20,7 +22,7 @@ export default function insertTitleContent() {
   const startBtn = document.createElement("button");
   startBtn.textContent = "START";
   startBtn.addEventListener("click", (e) => {
-    console.log("start");
+    insertBuildFleetContent();
   });
   footerContent.appendChild(startBtn);
 }

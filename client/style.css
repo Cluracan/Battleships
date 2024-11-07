@@ -11,6 +11,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --header-height: 15vh;
 }
 /* .prevent-select {
   -webkit-user-select: none; 
@@ -27,17 +29,48 @@ body {
 }
 
 #main-content {
+  display: flex;
   background-color: aqua;
   height: 70vh;
   /* border: 1px solid black; */
 }
 
-#header-content {
-  height: 15vh;
-  background-color: darkseagreen;
+#left-content {
+  height: 70vh;
+  width: 50%;
+  background-color: lightpink;
+}
+
+#right-content {
+  height: 70vh;
+  width: 50%;
+  background-color: lightgrey;
 }
 
 #footer-content {
   height: 15vh;
   background-color: burlywood;
+}
+
+/* -------------
+  Header Content
+---------------*/
+#header-content {
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+  background-color: darkseagreen;
+}
+
+#marvin-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#title-text {
+  line-height: var(--header-height);
+  background-color: aquamarine;
+  font-size: x-large;
+  padding-right: 2rem;
 }

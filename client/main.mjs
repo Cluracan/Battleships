@@ -1,5 +1,5 @@
 import { Gameboard } from "./game-logic/gameboard.mjs";
-import insertTitleContent from "./titleScreen.mjs";
+import insertTitleContent from "./titleContent.mjs";
 
 insertTitleContent();
 

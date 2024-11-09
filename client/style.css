@@ -38,6 +38,9 @@ body {
 #left-content {
   height: 70vh;
   width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: lightpink;
 }
 
@@ -73,4 +76,46 @@ body {
   background-color: aquamarine;
   font-size: x-large;
   padding-right: 2rem;
+}
+
+/* -----------------
+  buildFleet content
+-------------------*/
+
+/* -------------
+  Left Content
+---------------*/
+
+#ship-select-container {
+  width: 30vw;
+  height: 50vh;
+  background-color: aquamarine;
+}
+
+.ship-part {
+  width: 3rem;
+  height: 3rem;
+  background-size: cover;
+}
+
+.battleship0 {
+  background-image: url("./images/battleship-0.png");
+}
+.battleship1 {
+  background-image: url("./images/battleship-1.png");
+}
+.battleship2 {
+  background-image: url("./images/battleship-2.png");
+}
+.battleship3 {
+  background-image: url("./images/battleship-3.png");
+}
+
+#battleship {
+  height: min-content;
+  width: min-content;
+}
+
+.rotate1 {
+  transform: rotate(90deg);
 }

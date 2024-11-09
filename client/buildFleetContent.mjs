@@ -44,29 +44,35 @@ export default function insertBuildFleetContent() {
     console.log("move");
     console.log(e.clientX, e.clientY);
     battleshipDiv.style.position = "absolute";
-    if (battleshipDiv.classList.contains("rotate1")) {
-      battleshipDiv.style.left = `${
-        e.clientX -
-        battleshipDiv.dataset.offsetX +
-        (parseInt(battleshipDiv.dataset.height) +
-          parseInt(battleshipDiv.dataset.width) / 2) /
-          2
-      }px`;
-      battleshipDiv.style.top = `${
-        e.clientY -
-        battleshipDiv.dataset.offsetY -
-        (parseInt(battleshipDiv.dataset.width) -
-          parseInt(battleshipDiv.dataset.height)) /
-          2
-      }px`;
-    } else {
-      battleshipDiv.style.left = `${
-        e.clientX - battleshipDiv.dataset.offsetX
-      }px`;
-      battleshipDiv.style.top = `${
-        e.clientY - battleshipDiv.dataset.offsetY
-      }px`;
-    }
+    battleshipDiv.style.left = `${
+      e.clientX - parseInt(battleshipDiv.dataset.width) / 2
+    }px`;
+    battleshipDiv.style.top = `${
+      e.clientY - parseInt(battleshipDiv.dataset.height) / 2
+    }px`;
+    // if (battleshipDiv.classList.contains("rotate1")) {
+    //   battleshipDiv.style.left = `${
+    //     e.clientX -
+    //     battleshipDiv.dataset.offsetX +
+    //     (parseInt(battleshipDiv.dataset.height) +
+    //       parseInt(battleshipDiv.dataset.width) / 2) /
+    //       2
+    //   }px`;
+    //   battleshipDiv.style.top = `${
+    //     e.clientY -
+    //     battleshipDiv.dataset.offsetY -
+    //     (parseInt(battleshipDiv.dataset.width) -
+    //       parseInt(battleshipDiv.dataset.height)) /
+    //       2
+    //   }px`;
+    // } else {
+    //   battleshipDiv.style.left = `${
+    //     e.clientX - battleshipDiv.dataset.offsetX
+    //   }px`;
+    //   battleshipDiv.style.top = `${
+    //     e.clientY - battleshipDiv.dataset.offsetY
+    //   }px`;
+    // }
   }
   function handleMouseWheel(e) {
     if (battleshipDiv.classList.contains("rotate1")) {

@@ -1,5 +1,5 @@
 import { Ship } from "./ship.mjs";
-import { availableShips } from "./battleships-config.mjs";
+import { availableShips, gridSize } from "./battleships-config.mjs";
 
 export class Gameboard {
   #grid;
@@ -69,7 +69,7 @@ export class Gameboard {
       endPoint.row,
       endPoint.col,
     ]) {
-      if (value < 0 || value > 9) {
+      if (value < 0 || value > gridSize - 1) {
         isInBoundsCheck = false;
       }
     }
@@ -100,8 +100,8 @@ export class Gameboard {
   }
 
   #initialiseGrid() {
-    return Array.from({ length: 10 }, (v, i) =>
-      Array.from({ length: 10 }, (v, i) => {
+    return Array.from({ length: gridSize }, (v, i) =>
+      Array.from({ length: gridSize }, (v, i) => {
         return {
           ship: undefined,
           shotFired: false,

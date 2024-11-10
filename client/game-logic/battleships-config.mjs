@@ -6,6 +6,8 @@ const availableShips = {
   "patrol boat": { length: 2, code: "P" },
 };
 
-export { availableShips };
+const gridSize = 10;
+
+export { availableShips, gridSize };
 
 //'code' key currently unused:) but leaving these as objects to allow for 'quantity' (would need refactoring obviously

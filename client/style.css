@@ -13,6 +13,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   --header-height: 15vh;
+  --cell-size: 3rem;
 }
 /* .prevent-select {
   -webkit-user-select: none; 
@@ -93,8 +94,8 @@ body {
 }
 
 .ship-part {
-  width: 3rem;
-  height: 3rem;
+  width: var(--cell-size);
+  height: var(--cell-size);
   background-size: cover;
 }
 
@@ -118,4 +119,44 @@ body {
 
 .rotate1 {
   transform: rotate(90deg);
+}
+/*--------------
+  gameboard
+--------------*/
+
+.gameboard {
+  display: grid;
+  width: min-content;
+  height: min-content;
+  gap: 1px;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+  background-color: black;
+}
+
+.board-cell {
+  height: var(--cell-size);
+  width: var(--cell-size);
+  place-content: center;
+  text-align: center;
+  line-height: var(--cell-size);
+}
+
+.play-cell {
+  background-color: rgb(97, 175, 224);
+}
+
+.guide {
+  background-color: rgb(159, 159, 159);
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/*--------------
+  Right content
+---------------*/
+#right-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

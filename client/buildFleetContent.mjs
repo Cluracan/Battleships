@@ -1,3 +1,5 @@
+import getGameboardDiv from "./gameBoardDiv.mjs";
+
 export default function insertBuildFleetContent() {
   const headerContent = document.getElementById("header-content");
   const leftContent = document.getElementById("left-content");
@@ -34,14 +36,13 @@ export default function insertBuildFleetContent() {
     battleshipDiv.dataset.offsetY = startY - bounds.y;
     battleshipDiv.dataset.height = bounds.height;
     battleshipDiv.dataset.width = bounds.width;
-    console.log(bounds);
-    console.log(battleshipDiv.dataset);
+
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("wheel", handleMouseWheel);
     window.addEventListener("mouseup", handleMouseUp);
   }
   function handleMouseMove(e) {
     console.log("move");
+
     console.log(e.clientX, e.clientY);
     battleshipDiv.style.position = "absolute";
     battleshipDiv.style.left = `${
@@ -73,6 +74,7 @@ export default function insertBuildFleetContent() {
     //     e.clientY - battleshipDiv.dataset.offsetY
     //   }px`;
     // }
+    battleshipDiv.addEventListener("wheel", handleMouseWheel);
   }
   function handleMouseWheel(e) {
     if (battleshipDiv.classList.contains("rotate1")) {
@@ -82,11 +84,14 @@ export default function insertBuildFleetContent() {
     }
   }
   function handleMouseUp(e) {
+    battleshipDiv.removeEventListener("mousedown", handleMouseDown);
     window.removeEventListener("mousemove", handleMouseMove);
+    battleshipDiv.removeEventListener("wheel", handleMouseWheel);
   }
   leftContent.appendChild(shipSelectContainer);
 
-  rightContent.textContent = "button options";
+  const playerBoard = getGameboardDiv("player");
+  rightContent.appendChild(playerBoard);
   const startBtn = document.createElement("button");
   startBtn.textContent = "START";
   startBtn.addEventListener("click", (e) => {

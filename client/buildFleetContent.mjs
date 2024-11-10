@@ -36,14 +36,11 @@ export default function insertBuildFleetContent() {
     battleshipDiv.dataset.offsetY = startY - bounds.y;
     battleshipDiv.dataset.height = bounds.height;
     battleshipDiv.dataset.width = bounds.width;
-
+    battleshipDiv.style.pointerEvents = "none";
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
   }
   function handleMouseMove(e) {
-    console.log("move");
-
-    console.log(e.clientX, e.clientY);
     battleshipDiv.style.position = "absolute";
     battleshipDiv.style.left = `${
       e.clientX - parseInt(battleshipDiv.dataset.width) / 2
@@ -51,30 +48,8 @@ export default function insertBuildFleetContent() {
     battleshipDiv.style.top = `${
       e.clientY - parseInt(battleshipDiv.dataset.height) / 2
     }px`;
-    // if (battleshipDiv.classList.contains("rotate1")) {
-    //   battleshipDiv.style.left = `${
-    //     e.clientX -
-    //     battleshipDiv.dataset.offsetX +
-    //     (parseInt(battleshipDiv.dataset.height) +
-    //       parseInt(battleshipDiv.dataset.width) / 2) /
-    //       2
-    //   }px`;
-    //   battleshipDiv.style.top = `${
-    //     e.clientY -
-    //     battleshipDiv.dataset.offsetY -
-    //     (parseInt(battleshipDiv.dataset.width) -
-    //       parseInt(battleshipDiv.dataset.height)) /
-    //       2
-    //   }px`;
-    // } else {
-    //   battleshipDiv.style.left = `${
-    //     e.clientX - battleshipDiv.dataset.offsetX
-    //   }px`;
-    //   battleshipDiv.style.top = `${
-    //     e.clientY - battleshipDiv.dataset.offsetY
-    //   }px`;
-    // }
-    battleshipDiv.addEventListener("wheel", handleMouseWheel);
+
+    window.addEventListener("wheel", handleMouseWheel);
   }
   function handleMouseWheel(e) {
     if (battleshipDiv.classList.contains("rotate1")) {
@@ -84,19 +59,28 @@ export default function insertBuildFleetContent() {
     }
   }
   function handleMouseUp(e) {
+    console.log(e);
     battleshipDiv.removeEventListener("mousedown", handleMouseDown);
     window.removeEventListener("mousemove", handleMouseMove);
-    battleshipDiv.removeEventListener("wheel", handleMouseWheel);
+    window.removeEventListener("wheel", handleMouseWheel);
   }
   leftContent.appendChild(shipSelectContainer);
 
-  const playerBoard = getGameboardDiv("player");
-  rightContent.appendChild(playerBoard);
+  const { gameboardDiv, playCells } = getGameboardDiv("player");
+  playCells.forEach((playCell) => {
+    playCell.addEventListener("mouseover", handleMouseOver);
+  });
+  console.log(playCells);
+  rightContent.appendChild(gameboardDiv);
+
+  function handleMouseOver(e) {
+    console.log(this);
+    this.style.background = "pink";
+  }
+
   const startBtn = document.createElement("button");
   startBtn.textContent = "START";
-  startBtn.addEventListener("click", (e) => {
-    console.log("start");
-  });
+  startBtn.addEventListener("click", (e) => {});
   footerContent.textContent = "Footer";
 }
 

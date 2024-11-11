@@ -1,9 +1,9 @@
 const availableShips = {
-  carrier: { length: 5, code: "C" },
-  battleship: { length: 4, code: "B" },
-  destroyer: { length: 3, code: "D" },
-  submarine: { length: 3, code: "S" },
-  "patrol boat": { length: 2, code: "P" },
+  carrier: { length: 5, code: "C", id: "carrier" },
+  battleship: { length: 4, code: "B", id: "battleship" },
+  destroyer: { length: 3, code: "D", id: "destroyer" },
+  submarine: { length: 3, code: "S", id: "submarine" },
+  "patrol boat": { length: 2, code: "P", id: "patrol" },
 };
 
 const gridSize = 10;

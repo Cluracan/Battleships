@@ -29,11 +29,11 @@ export default function insertBuildFleetContent() {
 
   //mouse functions
   function handleMouseDown(e) {
-    const startX = e.clientX;
-    const startY = e.clientY;
+    const shipPartIndex = parseInt(e.target.dataset.shipPartIndex);
+    battleshipDiv.dataset.selectedPartIndex = shipPartIndex;
+
     const bounds = battleshipDiv.getBoundingClientRect();
-    battleshipDiv.dataset.offsetX = startX - bounds.x;
-    battleshipDiv.dataset.offsetY = startY - bounds.y;
+
     battleshipDiv.dataset.height = bounds.height;
     battleshipDiv.dataset.width = bounds.width;
     battleshipDiv.style.pointerEvents = "none";
@@ -42,12 +42,9 @@ export default function insertBuildFleetContent() {
   }
   function handleMouseMove(e) {
     battleshipDiv.style.position = "absolute";
-    battleshipDiv.style.left = `${
-      e.clientX - parseInt(battleshipDiv.dataset.width) / 2
-    }px`;
-    battleshipDiv.style.top = `${
-      e.clientY - parseInt(battleshipDiv.dataset.height) / 2
-    }px`;
+    let { xOffset, yOffset } = getOffset(battleshipDiv);
+    battleshipDiv.style.left = `${e.clientX - xOffset}px`;
+    battleshipDiv.style.top = `${e.clientY - yOffset}px`;
 
     window.addEventListener("wheel", handleMouseWheel);
   }
@@ -57,20 +54,42 @@ export default function insertBuildFleetContent() {
     } else {
       battleshipDiv.classList.add("rotate1");
     }
+    let { xOffset, yOffset } = getOffset(battleshipDiv);
+
+    battleshipDiv.style.left = `${e.clientX - xOffset}px`;
+    battleshipDiv.style.top = `${e.clientY - yOffset}px`;
   }
   function handleMouseUp(e) {
-    console.log(e);
     battleshipDiv.removeEventListener("mousedown", handleMouseDown);
     window.removeEventListener("mousemove", handleMouseMove);
     window.removeEventListener("wheel", handleMouseWheel);
   }
+
+  function getOffset(selectedShipDiv) {
+    let xOffset, yOffset;
+    const shipLength = selectedShipDiv.dataset.shipLength;
+    if (selectedShipDiv.classList.contains("rotate1")) {
+      xOffset =
+        (shipLength / 2 - parseInt(selectedShipDiv.dataset.selectedPartIndex)) *
+        parseInt(selectedShipDiv.dataset.width);
+      yOffset = parseInt(selectedShipDiv.dataset.height) / 2;
+    } else {
+      xOffset = parseInt(selectedShipDiv.dataset.width) / 2;
+      yOffset =
+        ((parseInt(selectedShipDiv.dataset.selectedPartIndex) + 0.5) /
+          shipLength) *
+        parseInt(selectedShipDiv.dataset.height);
+    }
+    return { xOffset, yOffset };
+  }
+
   leftContent.appendChild(shipSelectContainer);
 
   const { gameboardDiv, playCells } = getGameboardDiv("player");
   playCells.forEach((playCell) => {
     playCell.addEventListener("mouseover", handleMouseOver);
   });
-  console.log(playCells);
+
   rightContent.appendChild(gameboardDiv);
 
   function handleMouseOver(e) {
@@ -86,10 +105,12 @@ export default function insertBuildFleetContent() {
 
 function getBattleshipDiv() {
   const battleshipDiv = document.createElement("div");
+  battleshipDiv.dataset.shipLength = 4;
   for (let i = 0; i < 4; i++) {
     const shipPart = document.createElement("div");
     shipPart.classList.add("ship-part");
     shipPart.classList.add(`battleship${i}`);
+    shipPart.dataset.shipPartIndex = i;
     battleshipDiv.appendChild(shipPart);
   }
   return battleshipDiv;

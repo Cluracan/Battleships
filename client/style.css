@@ -88,6 +88,7 @@ body {
 ---------------*/
 
 #ship-select-container {
+  display: flex;
   width: 30vw;
   height: 50vh;
   background-color: aquamarine;
@@ -97,6 +98,22 @@ body {
   width: var(--cell-size);
   height: var(--cell-size);
   background-size: cover;
+}
+
+.carrier0 {
+  background-image: url("./images/carrier-0.png");
+}
+.carrier1 {
+  background-image: url("./images/carrier-1.png");
+}
+.carrier2 {
+  background-image: url("./images/carrier-2.png");
+}
+.carrier3 {
+  background-image: url("./images/carrier-3.png");
+}
+.carrier4 {
+  background-image: url("./images/carrier-4.png");
 }
 
 .battleship0 {
@@ -112,7 +129,37 @@ body {
   background-image: url("./images/battleship-3.png");
 }
 
-#battleship {
+.destroyer0 {
+  background-image: url("./images/destroyer-0.png");
+}
+.destroyer1 {
+  background-image: url("./images/destroyer-1.png");
+}
+.destroyer2 {
+  background-image: url("./images/destroyer-2.png");
+}
+
+.submarine0 {
+  background-image: url("./images/submarine-0.png");
+}
+.submarine1 {
+  background-image: url("./images/submarine-1.png");
+}
+.submarine2 {
+  background-image: url("./images/submarine-2.png");
+}
+.patrol0 {
+  background-image: url("./images/patrol-0.png");
+}
+.patrol1 {
+  background-image: url("./images/patrol-1.png");
+}
+
+#carrier,
+#battleship,
+#destroyer,
+#submarine,
+#patrol {
   height: min-content;
   width: min-content;
 }

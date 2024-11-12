@@ -25,7 +25,9 @@ export default function getGameboardDiv(divId) {
       } else {
         cellDiv.classList.add("empty");
         cellDiv.classList.add("play-cell");
-        cellDiv.classList.add("empty");
+        cellDiv.dataset.rowIndex = i;
+        cellDiv.dataset.colIndex = j - 1;
+        cellDiv.dataset.shipPlaced = false;
         playCells.push(cellDiv);
       }
       gameboardDiv.appendChild(cellDiv);

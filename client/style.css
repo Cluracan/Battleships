@@ -207,3 +207,11 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.highlight-red {
+  background-color: red;
+}
+
+.highlight-green {
+  background-color: green;
+}

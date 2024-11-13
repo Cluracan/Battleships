@@ -186,6 +186,7 @@ body {
   place-content: center;
   text-align: center;
   line-height: var(--cell-size);
+  background-size: cover;
 }
 
 .play-cell {

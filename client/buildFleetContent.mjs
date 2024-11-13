@@ -1,37 +1,47 @@
 import { availableShips, gridSize } from "./game-logic/battleships-config.mjs";
 import getGameboardDiv from "./gameBoardDiv.mjs";
+import { cleanContent } from "./utils.mjs";
 
-export default function insertBuildFleetContent() {
-  const headerContent = document.getElementById("header-content");
-  const leftContent = document.getElementById("left-content");
-  const rightContent = document.getElementById("right-content");
-  const footerContent = document.getElementById("footer-content");
-  for (const contentDiv of [
-    headerContent,
-    leftContent,
-    rightContent,
-    footerContent,
-  ]) {
-    while (contentDiv.firstChild) {
-      contentDiv.removeChild(contentDiv.firstChild);
-    }
-  }
+export default function insertBuildFleetContent(
+  headerContent,
+  leftContent,
+  rightContent,
+  footerContent
+) {
+  //Variables
+  let availableShipList = [];
+  let placedShipList = [];
+  let selectedShipDiv;
 
+  //Clean divs
+  cleanContent(headerContent, leftContent, rightContent, footerContent);
+
+  //Header
   headerContent.appendChild(getMarvinDiv());
   headerContent.appendChild(getTitleDiv());
 
+  //Left content
   const shipSelectContainer = document.createElement("div");
   shipSelectContainer.setAttribute("id", "ship-select-container");
+  leftContent.appendChild(shipSelectContainer);
 
-  const shipsToBePlaced = Object.values(availableShips);
-  for (const shipData of shipsToBePlaced) {
+  //Right content
+  const { gameboardDiv, playCells } = getGameboardDiv("player");
+  playCells.forEach((playCell) => {
+    playCell.addEventListener("mouseover", handleMouseOver);
+    playCell.addEventListener("mouseout", handleMouseOut);
+  });
+
+  rightContent.appendChild(gameboardDiv);
+
+  //resetContent
+  availableShipList = Object.values(availableShips);
+  for (const shipData of availableShipList) {
     const shipDiv = getShipDiv(shipData);
     shipDiv.addEventListener("mousedown", handleMouseDown);
-
     shipSelectContainer.appendChild(shipDiv);
   }
 
-  let selectedShipDiv;
   //mouse functions
   function handleMouseDown(e) {
     selectedShipDiv = e.target.parentNode;
@@ -71,9 +81,18 @@ export default function insertBuildFleetContent() {
     }
   }
   function handleMouseUp(e) {
-    selectedShipDiv.removeEventListener("mousedown", handleMouseDown);
-    window.removeEventListener("mousemove", handleMouseMove);
-    window.removeEventListener("wheel", handleMouseWheel);
+    if (e.target.classList.contains("play-cell") && selectedShipDiv) {
+      const curRow = parseInt(e.target.dataset.rowIndex);
+      const curCol = parseInt(e.target.dataset.colIndex);
+      let potentialShipCells = getShipCoordinates(curRow, curCol);
+      if (freeCellCheck(potentialShipCells)) {
+        highlightCells(potentialShipCells, null);
+        insertShip(potentialShipCells);
+      }
+      selectedShipDiv.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("wheel", handleMouseWheel);
+    }
   }
   function getOffset(selectedShipDiv) {
     let xOffset, yOffset;
@@ -92,16 +111,6 @@ export default function insertBuildFleetContent() {
     }
     return { xOffset, yOffset };
   }
-
-  leftContent.appendChild(shipSelectContainer);
-
-  const { gameboardDiv, playCells } = getGameboardDiv("player");
-  playCells.forEach((playCell) => {
-    playCell.addEventListener("mouseover", handleMouseOver);
-    playCell.addEventListener("mouseout", handleMouseOut);
-  });
-
-  rightContent.appendChild(gameboardDiv);
 
   function handleMouseOver(e) {
     console.log("looking");
@@ -187,9 +196,28 @@ export default function insertBuildFleetContent() {
       cell.classList.remove("highlight-red");
       cell.classList.remove("highlight-green");
     });
-    potentialShipCells.forEach((cell) => {
+    if (color != null) {
+      potentialShipCells.forEach((cell) => {
+        const playCellIndex = cell.row * 10 + cell.col;
+        playCells[playCellIndex].classList.add(`highlight-${color}`);
+      });
+    }
+  }
+
+  function insertShip(potentialShipCells) {
+    const shipId = selectedShipDiv.id;
+    const shipLength = selectedShipDiv.dataset.shipLength;
+    console.log(shipId, shipLength);
+    potentialShipCells.forEach((cell, i) => {
       const playCellIndex = cell.row * 10 + cell.col;
-      playCells[playCellIndex].classList.add(`highlight-${color}`);
+      if (selectedShipDiv.classList.contains("rotate1")) {
+        playCells[playCellIndex].classList.add(
+          `${shipId}${shipLength - 1 - i}`
+        );
+        playCells[playCellIndex].classList.add("rotate1");
+      } else {
+        playCells[playCellIndex].classList.add(`${shipId}${i}`);
+      }
     });
   }
 

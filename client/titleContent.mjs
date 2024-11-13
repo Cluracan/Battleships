@@ -22,7 +22,12 @@ export default function insertTitleContent() {
   const startBtn = document.createElement("button");
   startBtn.textContent = "START";
   startBtn.addEventListener("click", (e) => {
-    insertBuildFleetContent();
+    insertBuildFleetContent(
+      headerContent,
+      leftContent,
+      rightContent,
+      footerContent
+    );
   });
   footerContent.appendChild(startBtn);
 }

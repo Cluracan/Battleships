@@ -53,6 +53,7 @@ export default function insertBuildFleetContent(
     selectedShipDiv.dataset.height = bounds.height;
     selectedShipDiv.dataset.width = bounds.width;
     selectedShipDiv.style.pointerEvents = "none";
+    selectedShipDiv.style.zIndex = 1;
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
   }
@@ -81,6 +82,7 @@ export default function insertBuildFleetContent(
     }
   }
   function handleMouseUp(e) {
+    //Find and insert cells (some repetition with freeCellCheck)
     if (e.target.classList.contains("play-cell") && selectedShipDiv) {
       const curRow = parseInt(e.target.dataset.rowIndex);
       const curCol = parseInt(e.target.dataset.colIndex);
@@ -88,11 +90,60 @@ export default function insertBuildFleetContent(
       if (freeCellCheck(potentialShipCells)) {
         highlightCells(potentialShipCells, null);
         insertShip(potentialShipCells);
+
+        //Remove ship from availableShips
+        availableShipList = availableShipList.filter(
+          (ship) => ship.id !== selectedShipDiv.id
+        );
+        //Add ship to placedShips
+        placedShipList.push({
+          id: selectedShipDiv.id,
+          length: selectedShipDiv.dataset.shipLength,
+          placement: potentialShipCells,
+        });
+
+        //remove event listeners
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("wheel", handleMouseWheel);
+        //refresh availableShipsContainer
+        cleanContent(shipSelectContainer);
+        for (const shipData of availableShipList) {
+          const shipDiv = getShipDiv(shipData);
+          shipDiv.addEventListener("mousedown", handleMouseDown);
+          shipSelectContainer.appendChild(shipDiv);
+        }
+      } else {
+        //BIG REPETITION!!!!!!!!!!!!!!!!!!--------------------------------
+        //reset ship position
+        shipSelectContainer.left = 0;
+        shipSelectContainer.top = 0;
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("wheel", handleMouseWheel);
+        //refresh availableShipsContainer
+        cleanContent(shipSelectContainer);
+        for (const shipData of availableShipList) {
+          const shipDiv = getShipDiv(shipData);
+          shipDiv.addEventListener("mousedown", handleMouseDown);
+          shipSelectContainer.appendChild(shipDiv);
+        }
       }
-      selectedShipDiv.removeEventListener("mousedown", handleMouseDown);
+    } else {
+      //reset ship position
+      shipSelectContainer.left = 0;
+      shipSelectContainer.top = 0;
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("wheel", handleMouseWheel);
+      //refresh availableShipsContainer
+      cleanContent(shipSelectContainer);
+      for (const shipData of availableShipList) {
+        const shipDiv = getShipDiv(shipData);
+        shipDiv.addEventListener("mousedown", handleMouseDown);
+        shipSelectContainer.appendChild(shipDiv);
+      }
     }
+    //remove selectedShipDiv
+    selectedShipDiv = null;
+    console.log(placedShipList);
   }
   function getOffset(selectedShipDiv) {
     let xOffset, yOffset;
@@ -113,20 +164,14 @@ export default function insertBuildFleetContent(
   }
 
   function handleMouseOver(e) {
-    console.log("looking");
-    console.log(this);
-    console.log(e.target);
     if (selectedShipDiv) {
       const curRow = parseInt(e.target.dataset.rowIndex);
       const curCol = parseInt(e.target.dataset.colIndex);
       let potentialShipCells = getShipCoordinates(curRow, curCol);
       if (freeCellCheck(potentialShipCells)) {
-        console.log("good");
         highlightCells(potentialShipCells, "green");
       } else {
         potentialShipCells = potentialShipCells.filter((cell) => {
-          console.log(cell);
-          console.log(gridSize);
           return (
             cell.row >= 0 &&
             cell.row < gridSize &&
@@ -134,15 +179,8 @@ export default function insertBuildFleetContent(
             cell.col < gridSize
           );
         });
-        console.log(potentialShipCells);
-        highlightCells(potentialShipCells, "red");
-        console.log("bad");
-      }
 
-      if (selectedShipDiv.classList.contains("rotate1")) {
-        console.log("rotated");
-      } else {
-        console.log("vert");
+        highlightCells(potentialShipCells, "red");
       }
     }
   }
@@ -183,7 +221,7 @@ export default function insertBuildFleetContent(
             parseInt(cell.dataset.rowIndex) === row &&
             parseInt(cell.dataset.colIndex) === col
         );
-        if (curCell.dataset.shipPlaced === "true") {
+        if (!curCell.classList.contains("empty")) {
           freeCheck = false;
         }
       }
@@ -207,7 +245,7 @@ export default function insertBuildFleetContent(
   function insertShip(potentialShipCells) {
     const shipId = selectedShipDiv.id;
     const shipLength = selectedShipDiv.dataset.shipLength;
-    console.log(shipId, shipLength);
+
     potentialShipCells.forEach((cell, i) => {
       const playCellIndex = cell.row * 10 + cell.col;
       if (selectedShipDiv.classList.contains("rotate1")) {
@@ -218,6 +256,7 @@ export default function insertBuildFleetContent(
       } else {
         playCells[playCellIndex].classList.add(`${shipId}${i}`);
       }
+      playCells[playCellIndex].classList.remove("empty");
     });
   }
 

@@ -89,6 +89,8 @@ body {
 
 #ship-select-container {
   display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
   width: 30vw;
   height: 50vh;
   background-color: aquamarine;
@@ -112,6 +114,7 @@ body {
 .carrier3 {
   background-image: url("./images/carrier-3.png");
 }
+
 .carrier4 {
   background-image: url("./images/carrier-4.png");
 }
@@ -160,12 +163,25 @@ body {
 #destroyer,
 #submarine,
 #patrol {
+  display: flex;
   height: min-content;
   width: min-content;
 }
 
+.rotate0 {
+  transform: rotate(0deg);
+}
+
 .rotate1 {
   transform: rotate(90deg);
+}
+
+.rotate2 {
+  transform: rotate(180deg);
+}
+
+.rotate3 {
+  transform: rotate(270deg);
 }
 /*--------------
   gameboard

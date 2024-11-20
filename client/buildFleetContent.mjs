@@ -1,5 +1,6 @@
 import { availableShips, gridSize } from "./game-logic/battleships-config.mjs";
-import getGameboardDiv from "./gameBoardDiv.mjs";
+import GameboardController from "./gameboardController.mjs";
+import getGameboardDiv from "./gameboardController.mjs";
 import { cleanContent } from "./utils.mjs";
 
 export default function insertBuildFleetContent(
@@ -26,13 +27,14 @@ export default function insertBuildFleetContent(
   leftContent.appendChild(shipSelectContainer);
 
   //Right content
-  const { gameboardDiv, playCells } = getGameboardDiv("player");
+
+  //TESTING CLASS GAMEBOARD CONTROLLER-
+  const gameboardController = new GameboardController(rightContent);
+  const playCells = gameboardController.playCells;
   playCells.forEach((playCell) => {
     playCell.addEventListener("mouseover", handleMouseOver);
     playCell.addEventListener("mouseout", handleMouseOut);
   });
-
-  rightContent.appendChild(gameboardDiv);
 
   //resetContent
   availableShipList = Object.values(availableShips);
@@ -52,6 +54,7 @@ export default function insertBuildFleetContent(
 
     selectedShipDiv.dataset.height = bounds.height;
     selectedShipDiv.dataset.width = bounds.width;
+    selectedShipDiv.dataset.orientation = 0;
     selectedShipDiv.style.pointerEvents = "none";
     selectedShipDiv.style.zIndex = 1;
     window.addEventListener("mousemove", handleMouseMove);
@@ -67,11 +70,12 @@ export default function insertBuildFleetContent(
     window.addEventListener("wheel", handleMouseWheel);
   }
   function handleMouseWheel(e) {
-    if (selectedShipDiv.classList.contains("rotate1")) {
-      selectedShipDiv.classList.remove("rotate1");
-    } else {
-      selectedShipDiv.classList.add("rotate1");
-    }
+    const currentOrientation = parseInt(selectedShipDiv.dataset.orientation);
+    const newOrientation = (currentOrientation + 1) % 4;
+    selectedShipDiv.classList.remove(`rotate${currentOrientation}`);
+    selectedShipDiv.classList.add(`rotate${newOrientation}`);
+    selectedShipDiv.dataset.orientation = newOrientation;
+
     let { xOffset, yOffset } = getOffset(selectedShipDiv);
 
     selectedShipDiv.style.left = `${e.clientX - xOffset}px`;
@@ -148,18 +152,36 @@ export default function insertBuildFleetContent(
   function getOffset(selectedShipDiv) {
     let xOffset, yOffset;
     const shipLength = parseInt(selectedShipDiv.dataset.shipLength);
-    if (selectedShipDiv.classList.contains("rotate1")) {
-      xOffset =
-        (shipLength / 2 - parseInt(selectedShipDiv.dataset.selectedPartIndex)) *
-        parseInt(selectedShipDiv.dataset.width);
-      yOffset = parseInt(selectedShipDiv.dataset.height) / 2;
-    } else {
-      xOffset = parseInt(selectedShipDiv.dataset.width) / 2;
-      yOffset =
-        ((parseInt(selectedShipDiv.dataset.selectedPartIndex) + 0.5) /
-          shipLength) *
-        parseInt(selectedShipDiv.dataset.height);
+    const shipPartIndex = parseInt(selectedShipDiv.dataset.selectedPartIndex);
+    const currentOrientation = parseInt(selectedShipDiv.dataset.orientation);
+
+    switch (currentOrientation) {
+      case 0:
+        xOffset =
+          ((shipPartIndex + 0.5) / shipLength) *
+          parseInt(selectedShipDiv.dataset.width);
+        yOffset = parseInt(selectedShipDiv.dataset.height) / 2;
+        break;
+      case 1:
+        yOffset =
+          (1 - (shipLength / 2 - shipPartIndex)) *
+          parseInt(selectedShipDiv.dataset.height);
+        xOffset = parseInt(selectedShipDiv.dataset.width) / 2;
+        break;
+      case 2:
+        xOffset =
+          (1 - (shipPartIndex + 0.5) / shipLength) *
+          parseInt(selectedShipDiv.dataset.width);
+        yOffset = parseInt(selectedShipDiv.dataset.height) / 2;
+        break;
+      case 3:
+        yOffset =
+          (shipLength / 2 - shipPartIndex) *
+          parseInt(selectedShipDiv.dataset.height);
+        xOffset = parseInt(selectedShipDiv.dataset.width) / 2;
+        break;
     }
+
     return { xOffset, yOffset };
   }
 

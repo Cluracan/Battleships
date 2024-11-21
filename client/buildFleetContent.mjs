@@ -58,7 +58,6 @@ export default function insertBuildFleetContent(
       orientation: 0,
     };
 
-    console.log(gameboardController.selectedShip);
     const bounds = selectedShipDiv.getBoundingClientRect();
 
     selectedShipDiv.dataset.height = bounds.height;
@@ -79,20 +78,21 @@ export default function insertBuildFleetContent(
     window.addEventListener("wheel", handleMouseWheel);
   }
   function handleMouseWheel(e) {
+    const rotationIncrement = e.deltaY === 100 ? 1 : 3;
     const currentOrientation = parseInt(selectedShipDiv.dataset.orientation);
-    const newOrientation = (currentOrientation + 1) % 4;
+    const newOrientation = (currentOrientation + rotationIncrement) % 4;
     selectedShipDiv.classList.remove(`rotate${currentOrientation}`);
     selectedShipDiv.classList.add(`rotate${newOrientation}`);
     selectedShipDiv.dataset.orientation = newOrientation;
     gameboardController.selectedShip.orientation = newOrientation;
-    console.log(gameboardController.selectedShip);
+
     let { xOffset, yOffset } = getOffset(selectedShipDiv);
 
     selectedShipDiv.style.left = `${e.clientX - xOffset}px`;
     selectedShipDiv.style.top = `${e.clientY - yOffset}px`;
 
     if (e.target.classList.contains("play-cell")) {
-      handleMouseOver(e);
+      gameboardController.handleMouseOver(e);
     }
   }
   function handleMouseUp(e) {
@@ -157,7 +157,7 @@ export default function insertBuildFleetContent(
     }
     //remove selectedShipDiv
     selectedShipDiv = null;
-    console.log(placedShipList);
+    gameboardController.selectedShip = null;
   }
   function getOffset(selectedShipDiv) {
     let xOffset, yOffset;

@@ -80,8 +80,7 @@ export class Gameboard {
   #isValidOrientation(shipLength, startPoint, endPoint) {
     const rowDifference = Math.abs(startPoint.row - endPoint.row);
     const colDifference = Math.abs(startPoint.col - endPoint.col);
-    console.log(`orientation values:`);
-    console.log({ rowDifference, colDifference, shipLength });
+
     if (rowDifference === 0 || colDifference === 0) {
       return Math.max(rowDifference, colDifference) === shipLength - 1;
     } else {

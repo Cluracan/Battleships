@@ -49,11 +49,11 @@ export default class GameboardController extends Gameboard {
           cellDiv.classList.add("play-cell");
           cellDiv.dataset.rowIndex = i;
           cellDiv.dataset.colIndex = j - 1;
-          cellDiv.dataset.shipPlaced = false;
           cellDiv.addEventListener(
             "mouseover",
             this.handleMouseOver.bind(this)
           );
+          cellDiv.addEventListener("mouseout", this.handleMouseOut.bind(this));
           this.playCells.push(cellDiv);
         }
         this.gameboardDiv.appendChild(cellDiv);
@@ -66,24 +66,29 @@ export default class GameboardController extends Gameboard {
   }
 
   handleMouseOver(e) {
-    console.log(this);
-    console.log(e);
     if (this.selectedShip) {
       const curRow = parseInt(e.target.dataset.rowIndex);
       const curCol = parseInt(e.target.dataset.colIndex);
-      const [startPoint, endPoint] = this.getCoordinates(
+      const { startPoint, endPoint, allPoints } = this.getCoordinates(
         curRow,
         curCol,
         this.selectedShip.shipLength,
         this.selectedShip.shipPartIndex,
         this.selectedShip.orientation
       );
-      console.log(startPoint, endPoint);
 
-      console.log(
+      if (
         this.isValidLocation(this.selectedShip.shipLength, startPoint, endPoint)
-      );
+      ) {
+        this.highlightCells(allPoints, "valid");
+      } else {
+        this.highlightCells(allPoints, "invalid");
+      }
     }
+  }
+
+  handleMouseOut(e) {
+    this.removeHighlights();
   }
 
   getCoordinates(curRow, curCol, shipLength, shipPartIndex, orientation) {
@@ -99,10 +104,33 @@ export default class GameboardController extends Gameboard {
       row: curRow - shipPartIndex * rowInc,
       col: curCol - shipPartIndex * colInc,
     };
-    const endPoint = {
-      row: curRow + (shipLength - 1 - shipPartIndex) * rowInc,
-      col: curCol + (shipLength - 1 - shipPartIndex) * colInc,
-    };
-    return [startPoint, endPoint];
+    const allPoints = [];
+    for (let i = 0; i < shipLength; i++) {
+      const curPoint = {
+        row: startPoint.row + i * rowInc,
+        col: startPoint.col + i * colInc,
+      };
+      allPoints.push(curPoint);
+    }
+    const endPoint = allPoints[shipLength - 1];
+    return { startPoint, endPoint, allPoints };
+  }
+
+  highlightCells(allPoints, validCheck) {
+    this.removeHighlights();
+    for (const { row, col } of allPoints) {
+      if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
+        this.playCells[row * gridSize + col].classList.add(
+          `highlight-${validCheck}`
+        );
+      }
+    }
+  }
+
+  removeHighlights() {
+    this.playCells.forEach((cell) => {
+      cell.classList.remove("highlight-valid");
+      cell.classList.remove("highlight-invalid");
+    });
   }
 }

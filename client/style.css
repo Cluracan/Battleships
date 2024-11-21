@@ -225,10 +225,10 @@ body {
   justify-content: center;
 }
 
-.highlight-red {
+.highlight-invalid {
   background-color: red;
 }
 
-.highlight-green {
+.highlight-valid {
   background-color: green;
 }

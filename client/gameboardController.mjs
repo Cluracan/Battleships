@@ -2,6 +2,15 @@ import { gridSize } from "./game-logic/battleships-config.mjs";
 import { Gameboard } from "./game-logic/gameboard.mjs";
 import { cleanContent } from "./utils.mjs";
 
+/* selectedShip object: ---make private and have setter/getter?
+gameboardController.selectedShip = {
+  id: selectedShipDiv.id,
+  shipLength: selectedShipDiv.dataset.shipLength,
+  shipPartIndex: selectedShipDiv.dataset.selectedPartIndex,
+  orientation: 0,
+};
+*/
+
 export default class GameboardController extends Gameboard {
   gameboardDiv;
   playCells;
@@ -41,6 +50,10 @@ export default class GameboardController extends Gameboard {
           cellDiv.dataset.rowIndex = i;
           cellDiv.dataset.colIndex = j - 1;
           cellDiv.dataset.shipPlaced = false;
+          cellDiv.addEventListener(
+            "mouseover",
+            this.handleMouseOver.bind(this)
+          );
           this.playCells.push(cellDiv);
         }
         this.gameboardDiv.appendChild(cellDiv);
@@ -50,5 +63,46 @@ export default class GameboardController extends Gameboard {
     this.gameboardDiv.style.setProperty("--grid-cols", gridSize + 1);
     cleanContent(this.contentHolder);
     this.contentHolder.appendChild(this.gameboardDiv);
+  }
+
+  handleMouseOver(e) {
+    console.log(this);
+    console.log(e);
+    if (this.selectedShip) {
+      const curRow = parseInt(e.target.dataset.rowIndex);
+      const curCol = parseInt(e.target.dataset.colIndex);
+      const [startPoint, endPoint] = this.getCoordinates(
+        curRow,
+        curCol,
+        this.selectedShip.shipLength,
+        this.selectedShip.shipPartIndex,
+        this.selectedShip.orientation
+      );
+      console.log(startPoint, endPoint);
+
+      console.log(
+        this.isValidLocation(this.selectedShip.shipLength, startPoint, endPoint)
+      );
+    }
+  }
+
+  getCoordinates(curRow, curCol, shipLength, shipPartIndex, orientation) {
+    const orientationMap = {
+      0: { rowInc: 0, colInc: 1 },
+      1: { rowInc: 1, colInc: 0 },
+      2: { rowInc: 0, colInc: -1 },
+      3: { rowInc: -1, colInc: 0 },
+    };
+    let { rowInc, colInc } = orientationMap[orientation];
+
+    const startPoint = {
+      row: curRow - shipPartIndex * rowInc,
+      col: curCol - shipPartIndex * colInc,
+    };
+    const endPoint = {
+      row: curRow + (shipLength - 1 - shipPartIndex) * rowInc,
+      col: curCol + (shipLength - 1 - shipPartIndex) * colInc,
+    };
+    return [startPoint, endPoint];
   }
 }

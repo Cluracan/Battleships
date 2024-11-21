@@ -21,7 +21,8 @@ export class Gameboard {
     if (!this.#isValidShipName(shipName)) return false;
     const newShip = new Ship(shipName);
     if (this.#hasBeenPlaced(newShip.name)) return false;
-    if (!this.#isValidLocation(newShip, startPoint, endPoint)) return false;
+    if (!this.isValidLocation(newShip.length, startPoint, endPoint))
+      return false;
     this.#addToGrid(newShip, startPoint, endPoint);
     this.#placedShips.push(newShip);
     return true;
@@ -53,11 +54,11 @@ export class Gameboard {
     return this.#placedShips.some((ship) => ship.name === shipName);
   }
 
-  #isValidLocation(shipName, startPoint, endPoint) {
+  isValidLocation(shipLength, startPoint, endPoint) {
     return (
       this.#isInBounds(startPoint, endPoint) &&
-      this.#isValidOrientation(shipName, startPoint, endPoint) &&
-      this.#isFreeOfShips(shipName, startPoint, endPoint)
+      this.#isValidOrientation(shipLength, startPoint, endPoint) &&
+      this.#isFreeOfShips(shipLength, startPoint, endPoint)
     );
   }
 
@@ -76,10 +77,11 @@ export class Gameboard {
     return isInBoundsCheck;
   }
 
-  #isValidOrientation(shipName, startPoint, endPoint) {
-    const shipLength = shipName.length;
+  #isValidOrientation(shipLength, startPoint, endPoint) {
     const rowDifference = Math.abs(startPoint.row - endPoint.row);
     const colDifference = Math.abs(startPoint.col - endPoint.col);
+    console.log(`orientation values:`);
+    console.log({ rowDifference, colDifference, shipLength });
     if (rowDifference === 0 || colDifference === 0) {
       return Math.max(rowDifference, colDifference) === shipLength - 1;
     } else {
@@ -91,8 +93,12 @@ export class Gameboard {
     }
   }
 
-  #isFreeOfShips(shipName, startPoint, endPoint) {
-    let shipCells = this.#getShipLocationCells(shipName, startPoint, endPoint);
+  #isFreeOfShips(shipLength, startPoint, endPoint) {
+    let shipCells = this.#getShipLocationCells(
+      shipLength,
+      startPoint,
+      endPoint
+    );
     return shipCells.every(
       (cellLocation) =>
         this.grid[cellLocation.row][cellLocation.col].ship === undefined
@@ -110,13 +116,13 @@ export class Gameboard {
     );
   }
 
-  #getShipLocationCells(newShip, startPoint, endPoint) {
+  #getShipLocationCells(shipLength, startPoint, endPoint) {
     const cellArray = [];
-    const numberOfSteps = newShip.length - 1;
+    const numberOfSteps = shipLength - 1;
     const rowInc = (endPoint.row - startPoint.row) / numberOfSteps;
     const colInc = (endPoint.col - startPoint.col) / numberOfSteps;
 
-    for (let i = 0; i < newShip.length; i++) {
+    for (let i = 0; i < shipLength; i++) {
       cellArray.push({
         row: startPoint.row + rowInc * i,
         col: startPoint.col + colInc * i,

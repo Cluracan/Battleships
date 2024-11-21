@@ -32,7 +32,7 @@ export default function insertBuildFleetContent(
   const gameboardController = new GameboardController(rightContent);
   const playCells = gameboardController.playCells;
   playCells.forEach((playCell) => {
-    playCell.addEventListener("mouseover", handleMouseOver);
+    // playCell.addEventListener("mouseover", handleMouseOver);
     playCell.addEventListener("mouseout", handleMouseOut);
   });
 
@@ -47,9 +47,18 @@ export default function insertBuildFleetContent(
   //mouse functions
   function handleMouseDown(e) {
     selectedShipDiv = e.target.parentNode;
+
     const shipPartIndex = parseInt(e.target.dataset.shipPartIndex);
     selectedShipDiv.dataset.selectedPartIndex = shipPartIndex;
 
+    gameboardController.selectedShip = {
+      id: selectedShipDiv.id,
+      shipLength: parseInt(selectedShipDiv.dataset.shipLength),
+      shipPartIndex: selectedShipDiv.dataset.selectedPartIndex,
+      orientation: 0,
+    };
+
+    console.log(gameboardController.selectedShip);
     const bounds = selectedShipDiv.getBoundingClientRect();
 
     selectedShipDiv.dataset.height = bounds.height;
@@ -75,7 +84,8 @@ export default function insertBuildFleetContent(
     selectedShipDiv.classList.remove(`rotate${currentOrientation}`);
     selectedShipDiv.classList.add(`rotate${newOrientation}`);
     selectedShipDiv.dataset.orientation = newOrientation;
-
+    gameboardController.selectedShip.orientation = newOrientation;
+    console.log(gameboardController.selectedShip);
     let { xOffset, yOffset } = getOffset(selectedShipDiv);
 
     selectedShipDiv.style.left = `${e.clientX - xOffset}px`;

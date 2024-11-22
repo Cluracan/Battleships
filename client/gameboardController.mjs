@@ -132,4 +132,5 @@ export default class GameboardController extends Gameboard {
       cell.classList.remove("highlight-invalid");
     });
   }
+  placeSelectedShip() {}
 }

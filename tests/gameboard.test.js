@@ -28,7 +28,12 @@ describe("Ship placement", () => {
     // ]) {
     //   expect(testBoard.grid[point.row][point.col].ship).toBe("submarine");
     // }
-    testBoard.placeShip("battleship", { row: 0, col: 3 }, { row: 0, col: 6 });
+    const result = testBoard.placeShip(
+      "battleship",
+      { row: 0, col: 3 },
+      { row: 0, col: 6 }
+    );
+    console.log(result);
     for (const point of [
       { row: 0, col: 3 },
       { row: 0, col: 4 },
@@ -36,7 +41,6 @@ describe("Ship placement", () => {
       { row: 0, col: 6 },
     ]) {
       expect(testBoard.grid[point.row][point.col].ship).toBe("battleship");
-      expect(1 + 1).toBe;
     }
   });
 
@@ -70,13 +74,18 @@ describe("Ship placement", () => {
 
   test("correct ship placement returns true", () => {
     expect(
-      testBoard.placeShip("patrol boat", { row: 0, col: 2 }, { row: 0, col: 1 })
+      testBoard.placeShip("patrol", { row: 0, col: 2 }, { row: 0, col: 1 })
     ).toBe(true);
   });
 
   test("correct ship placement adds ship to placedShips store", () => {
-    testBoard.placeShip("patrol boat", { row: 0, col: 2 }, { row: 0, col: 1 });
-    testBoard.placeShip("submarine", { row: 1, col: 2 }, { row: 1, col: 4 });
+    testBoard.placeShip("patrol", { row: 0, col: 2 }, { row: 0, col: 1 });
+    const result = testBoard.placeShip(
+      "submarine",
+      { row: 1, col: 2 },
+      { row: 1, col: 4 }
+    );
+    console.log(result);
     expect(testBoard.ships.length).toBe(2);
   });
 

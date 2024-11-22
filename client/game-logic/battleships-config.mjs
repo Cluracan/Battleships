@@ -1,10 +1,11 @@
-const availableShips = {
-  carrier: { length: 5, code: "C", id: "carrier" },
-  battleship: { length: 4, code: "B", id: "battleship" },
-  destroyer: { length: 3, code: "D", id: "destroyer" },
-  submarine: { length: 3, code: "S", id: "submarine" },
-  "patrol boat": { length: 2, code: "P", id: "patrol" },
-};
+const availableShips = [
+  { name: "carrier", length: 5, code: "C", id: "carrier" },
+
+  { name: "battleship", length: 4, code: "B", id: "battleship" },
+  { name: "destroyer", length: 3, code: "D", id: "destroyer" },
+  { name: "submarine", length: 3, code: "S", id: "submarine" },
+  { name: "patrol boat", length: 2, code: "P", id: "patrol" },
+];
 
 const gridSize = 10;
 

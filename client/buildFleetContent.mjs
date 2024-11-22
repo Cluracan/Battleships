@@ -117,6 +117,7 @@ export default function insertBuildFleetContent(
         gameboardController.isValidLocation(shipLength, startPoint, endPoint)
       ) {
         console.log("DROP!");
+        gameboardController.placeSelectedShip();
       }
     }
 

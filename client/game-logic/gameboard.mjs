@@ -17,14 +17,17 @@ export class Gameboard {
     return this.#placedShips;
   }
 
-  placeShip(shipName, startPoint, endPoint) {
-    if (!this.#isValidShipName(shipName)) return false;
-    const newShip = new Ship(shipName);
-    if (this.#hasBeenPlaced(newShip.name)) return false;
+  placeShip(shipId, startPoint, endPoint) {
+    if (!this.#isValidShipId(shipId)) return false;
+
+    const newShip = new Ship(shipId);
+    if (this.#hasBeenPlaced(newShip.id)) return false;
+
     if (!this.isValidLocation(newShip.length, startPoint, endPoint))
       return false;
     this.#addToGrid(newShip, startPoint, endPoint);
     this.#placedShips.push(newShip);
+
     return true;
   }
 
@@ -46,12 +49,12 @@ export class Gameboard {
     }
   }
 
-  #isValidShipName(shipName) {
-    return Object.keys(availableShips).includes(shipName);
+  #isValidShipId(shipId) {
+    return availableShips.some((ship) => ship.id === shipId);
   }
 
-  #hasBeenPlaced(shipName) {
-    return this.#placedShips.some((ship) => ship.name === shipName);
+  #hasBeenPlaced(shipId) {
+    return this.#placedShips.some((ship) => ship.id === shipId);
   }
 
   isValidLocation(shipLength, startPoint, endPoint) {
@@ -131,7 +134,11 @@ export class Gameboard {
   }
 
   #addToGrid(newShip, startPoint, endPoint) {
-    let shipCells = this.#getShipLocationCells(newShip, startPoint, endPoint);
+    let shipCells = this.#getShipLocationCells(
+      newShip.length,
+      startPoint,
+      endPoint
+    );
 
     shipCells.forEach((location) => {
       this.#grid[location.row][location.col].ship = newShip.name;

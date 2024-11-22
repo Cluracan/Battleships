@@ -11,14 +11,14 @@ test("Can create ship instance", () => {
 });
 
 describe("instance properties: accessors", () => {
-  const testShips = Object.keys(availableShips);
-  testShips.forEach((shipName) => {
-    const testShip = new Ship(shipName);
+  const testShips = availableShips;
+  testShips.forEach((ship) => {
+    const testShip = new Ship(ship.id);
     test("correct name", () => {
-      expect(testShip.name).toBe(shipName);
+      expect(testShip.name).toBe(ship.name);
     });
     test("correct length", () => {
-      expect(testShip.length).toBe(availableShips[shipName].length);
+      expect(testShip.length).toBe(ship.length);
     });
     test("currect hitCount", () => {
       expect(testShip.hitCount).toBe(0);

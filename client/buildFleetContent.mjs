@@ -79,7 +79,7 @@ export default function insertBuildFleetContent(
   }
   function handleMouseWheel(e) {
     const rotationIncrement = e.deltaY === 100 ? 1 : 3;
-    const currentOrientation = parseInt(selectedShipDiv.dataset.orientation);
+    const currentOrientation = gameboardController.selectedShip.orientation;
     const newOrientation = (currentOrientation + rotationIncrement) % 4;
     selectedShipDiv.classList.remove(`rotate${currentOrientation}`);
     selectedShipDiv.classList.add(`rotate${newOrientation}`);
@@ -96,6 +96,30 @@ export default function insertBuildFleetContent(
     }
   }
   function handleMouseUp(e) {
+    if (
+      e.target.classList.contains("play-cell") &&
+      gameboardController.selectedShip
+      //set as gamebaord fn 'validDropSite'
+    ) {
+      const curRow = parseInt(e.target.dataset.rowIndex);
+      const curCol = parseInt(e.target.dataset.colIndex);
+      const { shipLength, shipPartIndex, orientation } =
+        gameboardController.selectedShip;
+      const { startPoint, endPoint } = gameboardController.getCoordinates(
+        curRow,
+        curCol,
+        shipLength,
+        shipPartIndex,
+        orientation
+      );
+
+      if (
+        gameboardController.isValidLocation(shipLength, startPoint, endPoint)
+      ) {
+        console.log("DROP!");
+      }
+    }
+
     //Find and insert cells (some repetition with freeCellCheck)
     if (e.target.classList.contains("play-cell") && selectedShipDiv) {
       const curRow = parseInt(e.target.dataset.rowIndex);

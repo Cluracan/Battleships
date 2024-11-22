@@ -69,17 +69,16 @@ export default class GameboardController extends Gameboard {
     if (this.selectedShip) {
       const curRow = parseInt(e.target.dataset.rowIndex);
       const curCol = parseInt(e.target.dataset.colIndex);
+      const { shipLength, shipPartIndex, orientation } = this.selectedShip;
       const { startPoint, endPoint, allPoints } = this.getCoordinates(
         curRow,
         curCol,
-        this.selectedShip.shipLength,
-        this.selectedShip.shipPartIndex,
-        this.selectedShip.orientation
+        shipLength,
+        shipPartIndex,
+        orientation
       );
 
-      if (
-        this.isValidLocation(this.selectedShip.shipLength, startPoint, endPoint)
-      ) {
+      if (this.isValidLocation(shipLength, startPoint, endPoint)) {
         this.highlightCells(allPoints, "valid");
       } else {
         this.highlightCells(allPoints, "invalid");

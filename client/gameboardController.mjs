@@ -119,11 +119,14 @@ export default class GameboardController extends Gameboard {
     this.removeHighlights();
     for (const { row, col } of allPoints) {
       if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
-        this.playCells[row * gridSize + col].classList.add(
-          `highlight-${validCheck}`
-        );
+        const curPlayCell = this.findPlayCell(row, col);
+        curPlayCell.classList.add(`highlight-${validCheck}`);
       }
     }
+  }
+
+  findPlayCell(row, col) {
+    return this.playCells[row * gridSize + col];
   }
 
   removeHighlights() {
@@ -132,5 +135,30 @@ export default class GameboardController extends Gameboard {
       cell.classList.remove("highlight-invalid");
     });
   }
-  placeSelectedShip() {}
+  placeSelectedShip(startPoint, endPoint, allPoints) {
+    this.removeHighlights();
+    //add background image to gameboardDiv
+    // TODO - pull this into a function to help with refresh screen
+    // TODO - add 'allPoints' to ship class to store placed ships in gameboard and localStorage
+    const shipId = this.selectedShip.id;
+    const shipOrientation = this.selectedShip.orientation;
+    allPoints.forEach((curPoint, index) => {
+      const curPlayCell = this.findPlayCell(curPoint.row, curPoint.col);
+      curPlayCell.classList.add(`${shipId}${index}`);
+      curPlayCell.classList.add(`rotate${shipOrientation}`);
+    });
+    //add to gameboard grid
+    this.placeShip(shipId, startPoint, endPoint, shipOrientation);
+    this.selectedShip = null;
+
+    //print grid (TODO REMOVE THIS)
+    this.grid.forEach((row) => {
+      let printRow = row
+        .map((cell) =>
+          cell.ship ? (cell.shotFired ? "#" : cell.ship[0].toUpperCase()) : "."
+        )
+        .join("");
+      console.log(printRow);
+    });
+  }
 }

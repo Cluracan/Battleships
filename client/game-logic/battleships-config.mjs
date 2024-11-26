@@ -1,10 +1,10 @@
 const availableShips = [
-  { name: "carrier", length: 5, code: "C", id: "carrier" },
+  { name: "Carrier", length: 5, code: "C", id: "carrier" },
 
-  { name: "battleship", length: 4, code: "B", id: "battleship" },
-  { name: "destroyer", length: 3, code: "D", id: "destroyer" },
-  { name: "submarine", length: 3, code: "S", id: "submarine" },
-  { name: "patrol boat", length: 2, code: "P", id: "patrol" },
+  { name: "Battleship", length: 4, code: "B", id: "battleship" },
+  { name: "Destroyer", length: 3, code: "D", id: "destroyer" },
+  { name: "Submarine", length: 3, code: "S", id: "submarine" },
+  { name: "Patrol boat", length: 2, code: "P", id: "patrol" },
 ];
 
 const gridSize = 10;

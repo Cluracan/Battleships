@@ -96,6 +96,20 @@ body {
   background-color: aquamarine;
 }
 
+.ship-holder {
+  display: flex;
+
+  align-items: center;
+}
+
+.ship-name {
+  font-size: large;
+  margin-right: auto;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .ship-part {
   width: var(--cell-size);
   height: var(--cell-size);

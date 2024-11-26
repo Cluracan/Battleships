@@ -1,6 +1,5 @@
-import { availableShips, gridSize } from "./game-logic/battleships-config.mjs";
+import { availableShips } from "./game-logic/battleships-config.mjs";
 import GameboardController from "./gameboardController.mjs";
-import getGameboardDiv from "./gameboardController.mjs";
 import { cleanContent } from "./utils.mjs";
 
 export default function insertBuildFleetContent(
@@ -27,12 +26,28 @@ export default function insertBuildFleetContent(
   leftContent.appendChild(shipSelectContainer);
 
   //fill ships
-
-  for (const shipData of availableShipList) {
-    const shipDiv = getShipDiv(shipData);
-    shipDiv.addEventListener("mousedown", handleMouseDown);
-    shipSelectContainer.appendChild(shipDiv);
-  }
+  availableShips.forEach((ship) => {
+    const shipHolder = document.createElement("div");
+    shipHolder.setAttribute("class", "ship-holder");
+    const shipName = document.createElement("div");
+    shipName.setAttribute("class", "ship-name");
+    shipName.textContent = ship.name;
+    shipHolder.appendChild(shipName);
+    if (
+      availableShipList.some((availableShip) => availableShip.id === ship.id)
+    ) {
+      const shipDiv = getShipDiv(ship);
+      shipDiv.addEventListener("mousedown", handleMouseDown);
+      shipHolder.appendChild(shipDiv);
+    }
+    shipSelectContainer.appendChild(shipHolder);
+  });
+  //old content :
+  // for (const shipData of availableShipList) {
+  //   const shipDiv = getShipDiv(shipData);
+  //   shipDiv.addEventListener("mousedown", handleMouseDown);
+  //   shipSelectContainer.appendChild(shipDiv);
+  // }
 
   //Right content
 
@@ -124,22 +139,6 @@ export default function insertBuildFleetContent(
           endPoint,
           allPoints,
         });
-        //remove event listeners
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("wheel", handleMouseWheel);
-        //refresh availableShipsContainer
-        cleanContent(shipSelectContainer);
-        for (const shipData of availableShipList) {
-          const shipDiv = getShipDiv(shipData);
-          shipDiv.addEventListener("mousedown", handleMouseDown);
-          shipSelectContainer.appendChild(shipDiv);
-        }
-        //Remove selected ships
-        selectedShipDiv = null;
-        gameboardController.selectedShip = null;
-
-        //Return out of mouseUp!
-        return;
       }
     }
     //ShipPlacement not valid: return selectedship to fleet
@@ -150,11 +149,22 @@ export default function insertBuildFleetContent(
     window.removeEventListener("wheel", handleMouseWheel);
     //refresh availableShipsContainer
     cleanContent(shipSelectContainer);
-    for (const shipData of availableShipList) {
-      const shipDiv = getShipDiv(shipData);
-      shipDiv.addEventListener("mousedown", handleMouseDown);
-      shipSelectContainer.appendChild(shipDiv);
-    }
+    availableShips.forEach((ship) => {
+      const shipHolder = document.createElement("div");
+      shipHolder.setAttribute("class", "ship-holder");
+      const shipName = document.createElement("div");
+      shipName.setAttribute("class", "ship-name");
+      shipName.textContent = ship.name;
+      shipHolder.appendChild(shipName);
+      if (
+        availableShipList.some((availableShip) => availableShip.id === ship.id)
+      ) {
+        const shipDiv = getShipDiv(ship);
+        shipDiv.addEventListener("mousedown", handleMouseDown);
+        shipHolder.appendChild(shipDiv);
+      }
+      shipSelectContainer.appendChild(shipHolder);
+    });
 
     //remove selectedShipDiv
     selectedShipDiv = null;

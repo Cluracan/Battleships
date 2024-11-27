@@ -24,40 +24,20 @@ export default function insertBuildFleetContent(
   const shipSelectContainer = document.createElement("div");
   shipSelectContainer.setAttribute("id", "ship-select-container");
   leftContent.appendChild(shipSelectContainer);
-
-  //fill ships
-  availableShips.forEach((ship) => {
-    const shipHolder = document.createElement("div");
-    shipHolder.setAttribute("class", "ship-holder");
-    const shipName = document.createElement("div");
-    shipName.setAttribute("class", "ship-name");
-    shipName.textContent = ship.name;
-    shipHolder.appendChild(shipName);
-    if (
-      availableShipList.some((availableShip) => availableShip.id === ship.id)
-    ) {
-      const shipDiv = getShipDiv(ship);
-      shipDiv.addEventListener("mousedown", handleMouseDown);
-      shipHolder.appendChild(shipDiv);
-    }
-    shipSelectContainer.appendChild(shipHolder);
-  });
-  //old content :
-  // for (const shipData of availableShipList) {
-  //   const shipDiv = getShipDiv(shipData);
-  //   shipDiv.addEventListener("mousedown", handleMouseDown);
-  //   shipSelectContainer.appendChild(shipDiv);
-  // }
+  refreshAvailableShips(availableShips, availableShipList, shipSelectContainer);
 
   //Right content
-
-  //TESTING CLASS GAMEBOARD CONTROLLER-
   const gameboardController = new GameboardController(rightContent);
+
+  //Footer
+  const startBtn = document.createElement("button");
+  startBtn.textContent = "START";
+  startBtn.addEventListener("click", (e) => {});
+  footerContent.textContent = "Footer";
 
   //mouse functions
   function handleMouseDown(e) {
     selectedShipDiv = e.target.parentNode;
-
     const shipPartIndex = parseInt(e.target.dataset.shipPartIndex);
     selectedShipDiv.dataset.selectedPartIndex = shipPartIndex;
 
@@ -69,7 +49,6 @@ export default function insertBuildFleetContent(
     };
 
     const bounds = selectedShipDiv.getBoundingClientRect();
-
     selectedShipDiv.dataset.height = bounds.height;
     selectedShipDiv.dataset.width = bounds.width;
     selectedShipDiv.dataset.orientation = 0;
@@ -78,15 +57,15 @@ export default function insertBuildFleetContent(
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
   }
+
   function handleMouseMove(e) {
     selectedShipDiv.style.position = "absolute";
     let { xOffset, yOffset } = getOffset(selectedShipDiv);
-
     selectedShipDiv.style.left = `${e.clientX - xOffset}px`;
     selectedShipDiv.style.top = `${e.clientY - yOffset}px`;
-
     window.addEventListener("wheel", handleMouseWheel);
   }
+
   function handleMouseWheel(e) {
     const rotationIncrement = e.deltaY === 100 ? 1 : 3;
     const currentOrientation = gameboardController.selectedShip.orientation;
@@ -97,7 +76,6 @@ export default function insertBuildFleetContent(
     gameboardController.selectedShip.orientation = newOrientation;
 
     let { xOffset, yOffset } = getOffset(selectedShipDiv);
-
     selectedShipDiv.style.left = `${e.clientX - xOffset}px`;
     selectedShipDiv.style.top = `${e.clientY - yOffset}px`;
 
@@ -105,11 +83,11 @@ export default function insertBuildFleetContent(
       gameboardController.handleMouseOver(e);
     }
   }
+
   function handleMouseUp(e) {
     if (
       e.target.classList.contains("play-cell") &&
       gameboardController.selectedShip
-      //set as gamebaord fn 'validDropSite'
     ) {
       const curRow = parseInt(e.target.dataset.rowIndex);
       const curCol = parseInt(e.target.dataset.colIndex);
@@ -125,9 +103,8 @@ export default function insertBuildFleetContent(
         );
 
       if (
-        gameboardController.isValidLocation(shipLength, startPoint, endPoint)
+        gameboardController.isValidLocation(shipLength, startPoint, endPoint, e)
       ) {
-        console.log("DROP!");
         gameboardController.placeSelectedShip(startPoint, endPoint, allPoints);
         //Remove ship from availableShips
         availableShipList = availableShipList.filter((ship) => ship.id !== id);
@@ -141,30 +118,16 @@ export default function insertBuildFleetContent(
         });
       }
     }
-    //ShipPlacement not valid: return selectedship to fleet
-    //reset ship position
-    shipSelectContainer.left = 0;
-    shipSelectContainer.top = 0;
+    //remove eventListeners
     window.removeEventListener("mousemove", handleMouseMove);
     window.removeEventListener("wheel", handleMouseWheel);
+
     //refresh availableShipsContainer
-    cleanContent(shipSelectContainer);
-    availableShips.forEach((ship) => {
-      const shipHolder = document.createElement("div");
-      shipHolder.setAttribute("class", "ship-holder");
-      const shipName = document.createElement("div");
-      shipName.setAttribute("class", "ship-name");
-      shipName.textContent = ship.name;
-      shipHolder.appendChild(shipName);
-      if (
-        availableShipList.some((availableShip) => availableShip.id === ship.id)
-      ) {
-        const shipDiv = getShipDiv(ship);
-        shipDiv.addEventListener("mousedown", handleMouseDown);
-        shipHolder.appendChild(shipDiv);
-      }
-      shipSelectContainer.appendChild(shipHolder);
-    });
+    refreshAvailableShips(
+      availableShips,
+      availableShipList,
+      shipSelectContainer
+    );
 
     //remove selectedShipDiv
     selectedShipDiv = null;
@@ -176,7 +139,6 @@ export default function insertBuildFleetContent(
     const shipLength = parseInt(selectedShipDiv.dataset.shipLength);
     const shipPartIndex = parseInt(selectedShipDiv.dataset.selectedPartIndex);
     const currentOrientation = parseInt(selectedShipDiv.dataset.orientation);
-
     switch (currentOrientation) {
       case 0:
         xOffset =
@@ -203,14 +165,32 @@ export default function insertBuildFleetContent(
         xOffset = parseInt(selectedShipDiv.dataset.width) / 2;
         break;
     }
-
     return { xOffset, yOffset };
   }
 
-  const startBtn = document.createElement("button");
-  startBtn.textContent = "START";
-  startBtn.addEventListener("click", (e) => {});
-  footerContent.textContent = "Footer";
+  function refreshAvailableShips(
+    availableShips,
+    availableShipList,
+    shipSelectContainer
+  ) {
+    cleanContent(shipSelectContainer);
+    availableShips.forEach((ship) => {
+      const shipHolder = document.createElement("div");
+      shipHolder.setAttribute("class", "ship-holder");
+      const shipName = document.createElement("div");
+      shipName.setAttribute("class", "ship-name");
+      shipName.textContent = ship.name;
+      shipHolder.appendChild(shipName);
+      if (
+        availableShipList.some((availableShip) => availableShip.id === ship.id)
+      ) {
+        const shipDiv = getShipDiv(ship);
+        shipDiv.addEventListener("mousedown", handleMouseDown);
+        shipHolder.appendChild(shipDiv);
+      }
+      shipSelectContainer.appendChild(shipHolder);
+    });
+  }
 }
 
 function getShipDiv(shipData) {

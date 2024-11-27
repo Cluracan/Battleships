@@ -13,7 +13,7 @@ export class Gameboard {
     return this.#grid;
   }
 
-  get ships() {
+  get placedShips() {
     return this.#placedShips;
   }
 
@@ -57,7 +57,9 @@ export class Gameboard {
     return this.#placedShips.some((ship) => ship.id === shipId);
   }
 
-  isValidLocation(shipLength, startPoint, endPoint) {
+  isValidLocation(shipLength, startPoint, endPoint, e) {
+    console.log("valid check");
+    console.log(e);
     return (
       this.#isInBounds(startPoint, endPoint) &&
       this.#isValidOrientation(shipLength, startPoint, endPoint) &&

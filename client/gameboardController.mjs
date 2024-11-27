@@ -160,5 +160,6 @@ export default class GameboardController extends Gameboard {
         .join("");
       console.log(printRow);
     });
+    console.log(this.placedShips);
   }
 }

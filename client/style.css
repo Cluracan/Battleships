@@ -94,11 +94,14 @@ body {
   width: 30vw;
   height: 50vh;
   background-color: aquamarine;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .ship-holder {
   display: flex;
-
+  height: var(--cell-size);
   align-items: center;
 }
 

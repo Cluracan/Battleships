@@ -33,7 +33,13 @@ export default function insertBuildFleetContent(
   const startBtn = document.createElement("button");
   startBtn.textContent = "START";
   startBtn.addEventListener("click", (e) => {});
-  footerContent.textContent = "Footer";
+  const resetBtn = document.createElement("button");
+  resetBtn.textContent = "RESET";
+  resetBtn.addEventListener("click", (e) => {
+    console.log("reset");
+  });
+  footerContent.appendChild(startBtn);
+  footerContent.appendChild(resetBtn);
 
   //mouse functions
   function handleMouseDown(e) {
@@ -132,6 +138,9 @@ export default function insertBuildFleetContent(
     //remove selectedShipDiv
     selectedShipDiv = null;
     gameboardController.selectedShip = null;
+
+    //remove highlights
+    gameboardController.removeHighlights();
   }
 
   function getOffset(selectedShipDiv) {
@@ -177,10 +186,6 @@ export default function insertBuildFleetContent(
     availableShips.forEach((ship) => {
       const shipHolder = document.createElement("div");
       shipHolder.setAttribute("class", "ship-holder");
-      const shipName = document.createElement("div");
-      shipName.setAttribute("class", "ship-name");
-      shipName.textContent = ship.name;
-      shipHolder.appendChild(shipName);
       if (
         availableShipList.some((availableShip) => availableShip.id === ship.id)
       ) {

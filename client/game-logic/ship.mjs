@@ -6,6 +6,8 @@ export class Ship {
   #length;
   #hitCount;
   #isSunk;
+  #allPoints;
+  #orientation;
   constructor(shipId) {
     if (!availableShips.some((ship) => ship.id === shipId)) {
       throw new Error(`Cannot create ship, input ${shipId}`);
@@ -33,6 +35,18 @@ export class Ship {
   }
   get isSunk() {
     return this.#isSunk;
+  }
+  set allPoints(allPointsArray) {
+    this.#allPoints = allPointsArray;
+  }
+  get allPoints() {
+    return this.#allPoints;
+  }
+  set orientation(shipOrientation) {
+    this.#orientation = shipOrientation;
+  }
+  get orientation() {
+    return this.#orientation;
   }
 
   scoreHit() {

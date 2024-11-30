@@ -17,18 +17,12 @@ export class Gameboard {
     return this.#placedShips;
   }
 
-  placeShip(shipId, startPoint, endPoint) {
-    if (!this.#isValidShipId(shipId)) return false;
-
+  placeShip(shipId, startPoint, endPoint, allPoints, shipOrientation) {
     const newShip = new Ship(shipId);
-    if (this.#hasBeenPlaced(newShip.id)) return false;
-
-    if (!this.isValidLocation(newShip.length, startPoint, endPoint))
-      return false;
+    newShip.allPoints = allPoints;
+    newShip.orientation = shipOrientation;
     this.#addToGrid(newShip, startPoint, endPoint);
     this.#placedShips.push(newShip);
-
-    return true;
   }
 
   resetBoard() {
@@ -57,9 +51,7 @@ export class Gameboard {
     return this.#placedShips.some((ship) => ship.id === shipId);
   }
 
-  isValidLocation(shipLength, startPoint, endPoint, e) {
-    console.log("valid check");
-    console.log(e);
+  isValidLocation(shipLength, startPoint, endPoint) {
     return (
       this.#isInBounds(startPoint, endPoint) &&
       this.#isValidOrientation(shipLength, startPoint, endPoint) &&

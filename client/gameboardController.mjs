@@ -148,7 +148,7 @@ export default class GameboardController extends Gameboard {
       curPlayCell.classList.add(`rotate${shipOrientation}`);
     });
     //add to gameboard grid
-    this.placeShip(shipId, startPoint, endPoint, shipOrientation);
+    this.placeShip(shipId, startPoint, endPoint, allPoints, shipOrientation);
     this.selectedShip = null;
 
     //print grid (TODO REMOVE THIS)

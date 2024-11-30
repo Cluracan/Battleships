@@ -40,7 +40,8 @@ describe("Ship placement", () => {
       { row: 0, col: 5 },
       { row: 0, col: 6 },
     ]) {
-      expect(testBoard.grid[point.row][point.col].ship).toBe("battleship");
+      console.log(testBoard.grid[point.row][point.col].ship);
+      expect(testBoard.grid[point.row][point.col].ship).toBe("Battleship");
     }
   });
 

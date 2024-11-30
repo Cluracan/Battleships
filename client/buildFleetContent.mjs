@@ -30,15 +30,15 @@ export default function insertBuildFleetContent(
   const gameboardController = new GameboardController(rightContent);
 
   //Footer
-  const startBtn = document.createElement("button");
-  startBtn.textContent = "START";
-  startBtn.addEventListener("click", (e) => {});
+
   const resetBtn = document.createElement("button");
   resetBtn.textContent = "RESET";
   resetBtn.addEventListener("click", (e) => {
-    console.log("reset");
+    gameboardController.intialiseGameBoardDisplay();
+    gameboardController.resetBoard();
+    resetShipSelectContainer();
   });
-  footerContent.appendChild(startBtn);
+
   footerContent.appendChild(resetBtn);
 
   //mouse functions
@@ -109,7 +109,7 @@ export default function insertBuildFleetContent(
         );
 
       if (
-        gameboardController.isValidLocation(shipLength, startPoint, endPoint, e)
+        gameboardController.isValidLocation(shipLength, startPoint, endPoint)
       ) {
         gameboardController.placeSelectedShip(startPoint, endPoint, allPoints);
         //Remove ship from availableShips
@@ -141,6 +141,14 @@ export default function insertBuildFleetContent(
 
     //remove highlights
     gameboardController.removeHighlights();
+
+    //check for all ships placed
+    if (
+      availableShipList.length === 0 &&
+      gameboardController.placedShips.length === availableShips.length
+    ) {
+      console.log("all done");
+    }
   }
 
   function getOffset(selectedShipDiv) {
@@ -175,6 +183,15 @@ export default function insertBuildFleetContent(
         break;
     }
     return { xOffset, yOffset };
+  }
+
+  function resetShipSelectContainer() {
+    availableShipList = availableShips.slice();
+    refreshAvailableShips(
+      availableShips,
+      availableShipList,
+      shipSelectContainer
+    );
   }
 
   function refreshAvailableShips(
